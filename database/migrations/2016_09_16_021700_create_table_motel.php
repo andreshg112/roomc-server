@@ -4,27 +4,26 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTablePortero extends Migration
+class CreateTableMotel extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-   public function up()
+    public function up()
     {
-          Schema::create('porteros', function(Blueprint $table){
+          Schema::create('moteles', function(Blueprint $table){
             $table->increments('id');
-            $table->foreign('user_id')
+            $table->string('nombre');
+            $table->string('direccion');
+            $table->string('telefono');
+            $table->integer('administrador_id')->unsigned();
+            $table->foreign('administrador_id')
             ->references('id')
-            ->on('usuarios')
+            ->on('administradores')
             ->onDelete('cascade')
             ->onUpdate('cascade');
-            $table->foreign('motel_id')
-            ->references('id')
-            ->on('moteles')
-            ->onDelete('cascade')
-            ->onUpdate('cascade') ;       
         }); 
     }
 
@@ -35,6 +34,6 @@ class CreateTablePortero extends Migration
      */
     public function down()
     {
-        Schema::drop('porteros');
+        Schema::drop('moteles');
     }
 }

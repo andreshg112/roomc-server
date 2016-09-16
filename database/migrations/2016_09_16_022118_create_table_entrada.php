@@ -21,11 +21,19 @@ class CreateTableEntrada extends Migration
             $table->string('tipo_vehiculo');
             $table->string('color');
             $table->string('marca');
+            $table->integer('portero_id')->unsigned();
+            $table->foreign('portero_id')
+            ->references('id')
+            ->on('porteros')
+            ->onDelete('cascade')
+            ->onUpdate('cascade');
+            $table->integer('motel_id')->unsigned();
             $table->foreign('motel_id')
                 ->references('id')
                 ->on('moteles')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+             $table->integer('habitacion_id')->unsigned();
              $table->foreign('habitacion_id')
                 ->references('id')
                 ->on('habitaciones')
