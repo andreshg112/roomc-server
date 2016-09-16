@@ -13,7 +13,7 @@ class CreateTableMotel extends Migration
      */
     public function up()
     {
-          Schema::create('motel', function(Blueprint $table){
+          Schema::create('moteles', function(Blueprint $table){
             $table->increments('id');
             $table->string('nombre');
             $table->string('direccion');
@@ -28,6 +28,6 @@ class CreateTableMotel extends Migration
      */
     public function down()
     {
-        Schema::drop('motel');
+        Schema::drop('moteles');
     }
 }

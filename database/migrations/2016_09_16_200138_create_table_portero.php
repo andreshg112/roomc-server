@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableHabitacion extends Migration
+class CreateTablePortero extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,18 @@ class CreateTableHabitacion extends Migration
      */
    public function up()
     {
-          Schema::create('habitaciones', function(Blueprint $table){
+          Schema::create('porteros', function(Blueprint $table){
             $table->increments('id');
-            $table->integer('numero');
+            $table->foreign('user_id')
+            ->references('id')
+            ->on('usuarios')
+            ->onDelete('cascade')
+            ->onUpdate('cascade');
             $table->foreign('motel_id')
             ->references('id')
             ->on('moteles')
             ->onDelete('cascade')
-            ->onUpdate('cascade');
+            ->onUpdate('cascade') ;       
         }); 
     }
 
@@ -31,6 +35,6 @@ class CreateTableHabitacion extends Migration
      */
     public function down()
     {
-        Schema::drop('habitaciones');
+        Schema::drop('porteros');
     }
 }

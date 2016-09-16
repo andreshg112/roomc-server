@@ -13,7 +13,7 @@ class CreateTableVehiculo extends Migration
      */
    public function up()
     {
-          Schema::create('vehiculo', function(Blueprint $table){
+          Schema::create('vehiculos', function(Blueprint $table){
             $table->increments('id');
             $table->string('marca');
         }); 
@@ -26,6 +26,6 @@ class CreateTableVehiculo extends Migration
      */
     public function down()
     {
-        Schema::drop('vehiculo');
+        Schema::drop('vehiculos');
     }
 }

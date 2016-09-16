@@ -13,7 +13,7 @@ class CreateTableEntrada extends Migration
      */
     public function up()
     {
-        Schema::create('entrada', function(Blueprint $table){
+        Schema::create('entradas', function(Blueprint $table){
             $table->increments('id');
             $table->time('hora_entrada');
             $table->time('hora_salida');
@@ -23,12 +23,12 @@ class CreateTableEntrada extends Migration
             $table->string('marca');
             $table->foreign('motel_id')
                 ->references('id')
-                ->on('motel')
+                ->on('moteles')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
              $table->foreign('habitacion_id')
                 ->references('id')
-                ->on('habitacion')
+                ->on('habitaciones')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');    
         });
@@ -40,6 +40,6 @@ class CreateTableEntrada extends Migration
      */
     public function down()
     {
-        Schema::drop('entrada');
+        Schema::drop('entradas');
     }
 }
