@@ -16,3 +16,4 @@ Route::get('/', function () {
 });
 
 Route::resource('/moteles', 'MotelesController');
+Route::resource('/administradores', 'AdministradorController');
