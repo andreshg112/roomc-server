@@ -13,14 +13,15 @@ class CreateTableEntrada extends Migration
      */
     public function up()
     {
-        Schema::create('entradas', function(Blueprint $table){
+        Schema::create('entradas_salidas', function(Blueprint $table){
             $table->increments('id');
-            $table->time('hora_entrada');
-            $table->time('hora_salida');
+            $table->datetime('fecha_entrada');
+            $table->datetime('fecha_salida');
             $table->string('placa');
             $table->string('tipo_vehiculo');
             $table->string('color');
             $table->string('marca');
+            $table->enum('estado', array('dentro', 'fuera'));
             $table->integer('portero_id')->unsigned();
             $table->foreign('portero_id')
             ->references('id')
@@ -38,7 +39,9 @@ class CreateTableEntrada extends Migration
                 ->references('id')
                 ->on('habitaciones')
                 ->onDelete('cascade')
-                ->onUpdate('cascade');    
+                ->onUpdate('cascade'); 
+            $table->timestamps();
+            //$table->softDeletes();   
         });
     }
     /**
@@ -48,6 +51,6 @@ class CreateTableEntrada extends Migration
      */
     public function down()
     {
-        Schema::drop('entradas');
+        Schema::drop('entradas_salidas');
     }
 }

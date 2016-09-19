@@ -26,7 +26,9 @@ class CreateTablePortero extends Migration
             ->references('id')
             ->on('moteles')
             ->onDelete('cascade')
-            ->onUpdate('cascade');       
+            ->onUpdate('cascade'); 
+            $table->timestamps();
+            //$table->softDeletes();      
         }); 
     }
 

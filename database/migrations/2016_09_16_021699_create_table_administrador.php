@@ -21,6 +21,8 @@ class CreateTableAdministrador extends Migration
             ->on('usuarios')
             ->onDelete('cascade')
             ->onUpdate('cascade');
+            $table->timestamps();
+            //$table->softDeletes();
         }); 
     }
 

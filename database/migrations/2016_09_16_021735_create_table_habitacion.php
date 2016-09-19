@@ -22,6 +22,8 @@ class CreateTableHabitacion extends Migration
             ->on('moteles')
             ->onDelete('cascade')
             ->onUpdate('cascade');
+            $table->timestamps();
+            //$table->softDeletes();
         }); 
     }
 

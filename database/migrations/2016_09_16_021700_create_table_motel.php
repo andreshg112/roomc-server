@@ -24,6 +24,8 @@ class CreateTableMotel extends Migration
             ->on('administradores')
             ->onDelete('cascade')
             ->onUpdate('cascade');
+            $table->timestamps();
+            //$table->softDeletes();
         }); 
     }
 
