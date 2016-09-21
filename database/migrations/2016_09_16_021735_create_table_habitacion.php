@@ -20,10 +20,9 @@ class CreateTableHabitacion extends Migration
             $table->foreign('motel_id')
             ->references('id')
             ->on('moteles')
-            ->onDelete('cascade')
             ->onUpdate('cascade');
             $table->timestamps();
-            //$table->softDeletes();
+            $table->softDeletes();
         }); 
     }
 

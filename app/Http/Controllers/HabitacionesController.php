@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Models\Administrador;
+use App\Models\Habitacion;
 
-
-class AdministradorController extends Controller
+class HabitacionesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +16,8 @@ class AdministradorController extends Controller
      */
     public function index()
     {
-        return Administrador::all();
+         return Habitacion::all();
+
     }
 
     /**

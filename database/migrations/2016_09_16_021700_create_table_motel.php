@@ -22,10 +22,9 @@ class CreateTableMotel extends Migration
             $table->foreign('administrador_id')
             ->references('id')
             ->on('administradores')
-            ->onDelete('cascade')
             ->onUpdate('cascade');
             $table->timestamps();
-            //$table->softDeletes();
+            $table->softDeletes();
         }); 
     }
 

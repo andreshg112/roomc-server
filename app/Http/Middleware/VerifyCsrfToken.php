@@ -13,6 +13,9 @@ class VerifyCsrfToken extends BaseVerifier
      */
     protected $except = [
         'moteles*',
-        'administradores*'
+        'administradores*',
+        'entradas-salidas*',
+        'marcas*',
+        'habitaciones*',
     ];
 }

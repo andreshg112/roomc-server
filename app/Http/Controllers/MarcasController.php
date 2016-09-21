@@ -3,50 +3,86 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use App\Http\Requests;
-use App\Models\Motel;
-use App\Models\Administrador;
-class MotelesController extends Controller
+use App\Models\Marca;
+
+class MarcasController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * GET /moteles
+     *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //return 'Hice GET /moteles';
-        //return Moteles::all(); 
+         $marca=Marca::all();
+
+        if($marca){
+            $respuesta["datos"]=$marca;
+        }else{
+            $respuesta["mensaje"]="No se encontraron resultados";
+        }
+        
+        return $respuesta; 
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
     }
 
     /**
      * Store a newly created resource in storage.
-     * POST /moteles
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $motel = new Motel($request->all());
-        $motel->save();
-        return $motel;
+        $marca = new Marca($request->all());
+        $marca->save();
+
+        if($marca){
+            $respuesta["mensaje"]="Guardado correctamente";
+            $respuesta["datos"]=$marca;
+        }else{
+            $respuesta["mensaje"]="No se pudo guardar";
+        }
+        
+        return $respuesta;
+        
     }
 
     /**
      * Display the specified resource.
-     * GET  /moteles/{id}
+     *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        return Motel::find($id)->first();
-          
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
     }
 
     /**
      * Update the specified resource in storage.
-     * PUT/PATCH  /moteles/{id}
+     *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -58,7 +94,7 @@ class MotelesController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * DELETE /moteles/{id}
+     *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */

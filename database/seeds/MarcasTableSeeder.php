@@ -3,8 +3,8 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
-class VehiculosTableSeeder extends Seeder
-{
+class MarcasTableSeeder extends Seeder{
+
     /**
      * Run the database seeds.
      *
@@ -12,7 +12,7 @@ class VehiculosTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('vehiculos')->insert([
+        DB::table('marcas')->insert([
             ['marca' => 'MAZDA'],
             ['marca' => 'RENAULT'],
             ['marca' => 'CHEVROLET'],

@@ -16,4 +16,19 @@ Route::get('/', function () {
 });
 
 Route::resource('/moteles', 'MotelesController');
-Route::resource('/administradores', 'AdministradorController');
+
+Route::resource('/administradores', 'AdministradoresController');
+Route::get('/administradores/{administrador_id}/moteles', 'AdministradoresController@getMotelesByAdministrador');
+
+Route::resource('/entradas-salidas', 'EntradasSalidasController');
+Route::get('/entradas-salidas/vehiculos/{estado}', 
+	'EntradasSalidasController@getAllVehiculos');
+Route::get('/entradas-salidas/vehiculo/{placa}', 
+	'EntradasSalidasController@getVehiculo');
+
+Route::resource('/marcas', 'MarcasController');
+Route::resource('/marcas/{id}', 'MarcasController');
+
+//Route::resource('/habitaciones', 'HabitacionesController');
+
+
