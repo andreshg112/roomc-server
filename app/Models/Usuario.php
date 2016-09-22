@@ -1,4 +1,4 @@
-\Models<?php
+<?php
 
 namespace App\Models;
 
@@ -8,9 +8,6 @@ class Usuario extends Model
 {
     public $table = 'usuarios';
 
-    protected $fillable = ['id', 'username', 'password', 'estado'];
-    protected $hidden = ['password'];
-
-    public function Usuario()
-
+    protected $fillable = ['id', 'username', 'password'];
+    //protected $hidden = ['password'];
 }

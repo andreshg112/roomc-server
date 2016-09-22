@@ -35,5 +35,7 @@ Route::get('/habitaciones/motel/{motel_id}',
 Route::resource('/marcas', 'MarcasController');
 Route::resource('/marcas/{id}', 'MarcasController');
 
+Route::resource('/iniciar-sesion', 'LoginController');
+
 
 
