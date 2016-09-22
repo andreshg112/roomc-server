@@ -4,10 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use App\Models\Motel;
 use App\Models\Administrador;
+
+use App\Models\Motel;
+use App\Models\Habitacion;
 class MotelesController extends Controller
 {
+
+    public function getHabitaciones($motel_id){
+        $habitaciones=Habitacion::where("motel_id", $motel_id)->get();
+       
+        if($habitaciones){
+            return $habitaciones;
+        } else {
+            $respuesta["mensaje"]="No se encontraron resultados";
+            return $respuesta;
+        }
+    }
+
     /**
      * Display a listing of the resource.
      * GET /moteles

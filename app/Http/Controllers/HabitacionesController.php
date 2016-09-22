@@ -9,18 +9,6 @@ use App\Models\Habitacion;
 
 class HabitacionesController extends Controller
 {
-
-    public function getHabitaciones($motel_id){
-        $habitaciones=Habitacion::where("motel_id", $motel_id)->get();
-       
-        if($habitaciones){
-            return $habitaciones;
-        } else {
-            $respuesta["mensaje"]="No se encontraron resultados";
-            return $respuesta;
-        }
-    }
-
     /**
      * Display a listing of the resource.
      *

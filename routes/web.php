@@ -16,6 +16,9 @@ Route::get('/', function () {
 });
 
 Route::resource('/moteles', 'MotelesController');
+//Route::resource('/moteles/{id}', 'MotelesController');
+Route::get('/moteles/{id}/habitaciones', 'MotelesController@getHabitaciones');
+
 
 Route::resource('/administradores', 'AdministradoresController');
 Route::get('/administradores/{administrador_id}/moteles', 'AdministradoresController@getMotelesByAdministrador');
@@ -27,21 +30,8 @@ Route::get('/entradas-salidas/vehiculo/{placa}',
 	'EntradasSalidasController@getVehiculo');
 
 Route::resource('/habitaciones', 'HabitacionesController');
-Route::get('/habitaciones/{id}', 'HabitacionesController@show'); // Por que esto?
-// Es lo que hace el resource. No es necesario que hagas tu propio metodo.
-// Ademas, esta repetido.
-Route::resource('/habitaciones', 'HabitacionesController');
 
-//Ruta mal escrita. Siguiendo las reglas:
-// moteles/{motel_id}/habitaciones
-//Es como de mayor a menor y en plural.
-Route::get('/habitaciones/motel/{motel_id}', 
-	'HabitacionesController@getHabitaciones');
-
-//El resouce hace "todo", es decir que no debes preocuparte por get/id getall, post...
-//Incluye todas.
 Route::resource('/marcas', 'MarcasController');
-Route::resource('/marcas/{id}', 'MarcasController'); //Esta esta de mas.
 
 Route::resource('/iniciar-sesion', 'LoginController');
 
