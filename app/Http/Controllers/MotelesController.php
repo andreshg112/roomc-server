@@ -29,7 +29,14 @@ class MotelesController extends Controller
     {
         $motel = new Motel($request->all());
         $motel->save();
-        return $motel;
+
+        if($motel){
+            $respuesta["mensaje"]="Guardado correctamente";
+            $respuesta["datos"]=$motel;
+        } else {
+            $respuesta["mensaje"]="Error al guarda";           
+        }
+        return $respuesta;
     }
 
     /**

@@ -19,12 +19,10 @@ class MarcasController extends Controller
          $marca=Marca::all();
 
         if($marca){
-            $respuesta["datos"]=$marca;
+          return  $respuesta["datos"]=$marca;
         }else{
             $respuesta["mensaje"]="No se encontraron resultados";
-        }
-        
-        return $respuesta; 
+        }         
     }
 
     /**
@@ -46,17 +44,16 @@ class MarcasController extends Controller
     public function store(Request $request)
     {
         $marca = new Marca($request->all());
-        $marca->save();
+        $result=$marca->save();
 
-        if($marca){
+        if($result){
             $respuesta["mensaje"]="Guardado correctamente";
             $respuesta["datos"]=$marca;
         }else{
             $respuesta["mensaje"]="No se pudo guardar";
         }
-        
-        return $respuesta;
-        
+
+        return $respuesta;        
     }
 
     /**
@@ -67,6 +64,15 @@ class MarcasController extends Controller
      */
     public function show($id)
     {
+        $marca = Marca::where("id", $id)->first();
+
+        if($marca){
+            return $marca;
+        }else{
+           return $respuesta["mensaje"]="No hay resultados";
+        }
+        
+       
     }
 
     /**
@@ -77,7 +83,7 @@ class MarcasController extends Controller
      */
     public function edit($id)
     {
-        //
+        
     }
 
     /**

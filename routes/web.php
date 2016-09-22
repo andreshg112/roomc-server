@@ -26,9 +26,14 @@ Route::get('/entradas-salidas/vehiculos/{estado}',
 Route::get('/entradas-salidas/vehiculo/{placa}', 
 	'EntradasSalidasController@getVehiculo');
 
+Route::resource('/habitaciones', 'HabitacionesController');
+Route::get('/habitaciones/{id}', 'HabitacionesController@show');
+Route::resource('/habitaciones', 'HabitacionesController');
+Route::get('/habitaciones/motel/{motel_id}', 
+	'HabitacionesController@getHabitaciones');
+
 Route::resource('/marcas', 'MarcasController');
 Route::resource('/marcas/{id}', 'MarcasController');
 
-//Route::resource('/habitaciones', 'HabitacionesController');
 
 

@@ -9,6 +9,18 @@ use App\Models\Habitacion;
 
 class HabitacionesController extends Controller
 {
+
+    public function getHabitaciones($motel_id){
+        $habitaciones=Habitacion::where("motel_id", $motel_id)->get();
+       
+        if($habitaciones){
+            return $habitaciones;
+        } else {
+            $respuesta["mensaje"]="No se encontraron resultados";
+            return $respuesta;
+        }
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,9 +28,17 @@ class HabitacionesController extends Controller
      */
     public function index()
     {
-         return Habitacion::all();
+       $datos=Habitacion::all();
 
+       if($datos){
+        $respuesta["datos"]=$datos;
+    } else {
+        $respuesta["datos"]=[];
+        $respuesta["Mensaje"]="No se encontraron resultados";
     }
+    return $respuesta;
+
+}
 
     /**
      * Show the form for creating a new resource.
@@ -38,7 +58,17 @@ class HabitacionesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $habitacion = new Habitacion($request->all());
+        $habitacion->save();
+
+        if($habitacion){
+            $respuesta["mensaje"]="Guardado correctamente";
+            $respuesta["datos"]=$habitacion;
+        }else{
+            $respuesta["mensaje"]="Error al guardar";            
+        }
+
+        return $respuesta;
     }
 
     /**
@@ -47,9 +77,15 @@ class HabitacionesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($numero)
     {
-        //
+        $habitacion= Habitacion::where("numero", $numero)->first();
+
+        if($habitacion){
+            return $habitacion;
+        }else{
+            return $respuesta["mensaje"]="No se encontraron resultados";
+        }
     }
 
     /**

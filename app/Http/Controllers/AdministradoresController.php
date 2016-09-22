@@ -30,7 +30,14 @@ class AdministradoresController extends Controller
      */
     public function index()
     {
-        return Administrador::all();
+        $administradores=Administrador::all();
+
+        if($administradores){
+            return $administradores;
+        } else {
+            return $respuesta["mensaje"]="No se encontraron registros";
+        }
+
     }
 
     /**
