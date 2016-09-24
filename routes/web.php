@@ -12,28 +12,27 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+	return view('welcome');
 });
 
-Route::resource('/moteles', 'MotelesController');
-//Route::resource('/moteles/{id}', 'MotelesController');
-Route::get('/moteles/{id}/habitaciones', 'MotelesController@getHabitaciones');
+//Todo lo que este dentro de este middleware, necesita ir con token.
+Route::group(['middleware' => 'jwt.auth'], function () {
+	Route::resource('/moteles', 'MotelesController');
+	Route::get('/moteles/{id}/habitaciones', 'MotelesController@getHabitaciones');
 
+	Route::resource('/administradores', 'AdministradoresController');
+	Route::get('/administradores/{administrador_id}/moteles', 'AdministradoresController@getMotelesByAdministrador');
 
-Route::resource('/administradores', 'AdministradoresController');
-Route::get('/administradores/{administrador_id}/moteles', 'AdministradoresController@getMotelesByAdministrador');
+	Route::resource('/entradas-salidas', 'EntradasSalidasController');
+	Route::get('/entradas-salidas/vehiculos/{estado}', 
+		'EntradasSalidasController@getAllVehiculos');
+	Route::get('/entradas-salidas/vehiculo/{placa}', 
+		'EntradasSalidasController@getVehiculo');
 
-Route::resource('/entradas-salidas', 'EntradasSalidasController');
-Route::get('/entradas-salidas/vehiculos/{estado}', 
-	'EntradasSalidasController@getAllVehiculos');
-Route::get('/entradas-salidas/vehiculo/{placa}', 
-	'EntradasSalidasController@getVehiculo');
+	Route::resource('/habitaciones', 'HabitacionesController');
 
-Route::resource('/habitaciones', 'HabitacionesController');
+	Route::resource('/marcas', 'MarcasController');
+});
 
-Route::resource('/marcas', 'MarcasController');
-
+//El iniciar sesion queda fuera porque no se necesita token para iniciar sesion.
 Route::resource('/iniciar-sesion', 'LoginController');
-
-
-

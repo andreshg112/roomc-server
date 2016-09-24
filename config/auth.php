@@ -61,13 +61,14 @@ return [
     | be assigned to any extra authentication guards you have defined.
     |
     | Supported: "database", "eloquent"
-    |
+    | Tambien por defecto tiene App\Models, para los Authenticable
+    | Pero como esta en otro namespace, se debe cambiar.
     */
 
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\User::class,
+            'model' => App\Models\Usuario::class,
         ],
 
         // 'users' => [
