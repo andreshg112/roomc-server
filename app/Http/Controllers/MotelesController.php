@@ -4,10 +4,39 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use App\Models\Motel;
 use App\Models\Administrador;
+
+use App\Models\Motel;
+use App\Models\Habitacion;
+use App\Models\EntradaSalida;
 class MotelesController extends Controller
 {
+
+    public function getHabitaciones($motel_id){
+        $habitaciones=Habitacion::where("motel_id", $motel_id)->get();
+       
+        if($habitaciones){
+            return $habitaciones;
+        } else {
+            $respuesta["mensaje"]="No se encontraron resultados";
+            return $respuesta;
+        }
+    }
+
+    public function getHabitacionesLibres($motel_id){
+        $habitaciones_ocupadas= EntradaSalida::select("habitacion")
+                                ->where("motel_id", $motel_id)
+                                ->whereNull('fecha_salida')
+                                ->get()
+                                ->toArray();
+        $habitaciones_libres=Habitacion::select("numero")
+                            ->where("motel_id", $motel_id)
+                            ->whereNotIn("numero", $habitaciones_ocupadas)
+                            ->get()
+                            ->toArray();
+        return $habitaciones_libres;
+    }
+
     /**
      * Display a listing of the resource.
      * GET /moteles
@@ -34,7 +63,7 @@ class MotelesController extends Controller
             $respuesta["mensaje"]="Guardado correctamente";
             $respuesta["datos"]=$motel;
         } else {
-            $respuesta["mensaje"]="Error al guarda";           
+            $respuesta["mensaje"]="Error al guardar";           
         }
         return $respuesta;
     }

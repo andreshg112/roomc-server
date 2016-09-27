@@ -12,38 +12,30 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+	return view('welcome');
 });
 
-Route::resource('/moteles', 'MotelesController');
+//Todo lo que este dentro de este middleware, necesita ir con token.
+Route::group(['middleware' => 'jwt.auth'], function () {
+	Route::resource('/moteles', 'MotelesController');
+	Route::get('/moteles/{id}/habitaciones', 'MotelesController@getHabitaciones');
 
-Route::resource('/administradores', 'AdministradoresController');
-Route::get('/administradores/{administrador_id}/moteles', 'AdministradoresController@getMotelesByAdministrador');
+	Route::get('/moteles/{id}/habitaciones-libres', 
+		        'MotelesController@getHabitacionesLibres');
 
-Route::resource('/entradas-salidas', 'EntradasSalidasController');
-Route::get('/entradas-salidas/vehiculos/{estado}', 
-	'EntradasSalidasController@getAllVehiculos');
-Route::get('/entradas-salidas/vehiculo/{placa}', 
-	'EntradasSalidasController@getVehiculo');
+	Route::resource('/administradores', 'AdministradoresController');
+	Route::get('/administradores/{administrador_id}/moteles', 'AdministradoresController@getMotelesByAdministrador');
 
-Route::resource('/habitaciones', 'HabitacionesController');
-Route::get('/habitaciones/{id}', 'HabitacionesController@show'); // Por que esto?
-// Es lo que hace el resource. No es necesario que hagas tu propio metodo.
-// Ademas, esta repetido.
-Route::resource('/habitaciones', 'HabitacionesController');
+	Route::resource('/entradas-salidas', 'EntradasSalidasController');
+	Route::get('/entradas-salidas/vehiculos/{estado}', 
+		'EntradasSalidasController@getAllVehiculos');
+	Route::get('/entradas-salidas/vehiculo/{placa}', 
+		'EntradasSalidasController@getVehiculo');
 
-//Ruta mal escrita. Siguiendo las reglas:
-// moteles/{motel_id}/habitaciones
-//Es como de mayor a menor y en plural.
-Route::get('/habitaciones/motel/{motel_id}', 
-	'HabitacionesController@getHabitaciones');
+	Route::resource('/habitaciones', 'HabitacionesController');
 
-//El resouce hace "todo", es decir que no debes preocuparte por get/id getall, post...
-//Incluye todas.
-Route::resource('/marcas', 'MarcasController');
-Route::resource('/marcas/{id}', 'MarcasController'); //Esta esta de mas.
+	Route::resource('/marcas', 'MarcasController');
+});
 
+//El iniciar sesion queda fuera porque no se necesita token para iniciar sesion.
 Route::resource('/iniciar-sesion', 'LoginController');
-
-
-

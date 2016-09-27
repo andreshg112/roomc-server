@@ -9,7 +9,7 @@ use App\Models\Marca;
 
 class MarcasController extends Controller
 {
-    /**
+    /** 
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -21,7 +21,7 @@ class MarcasController extends Controller
         if($marca){
           return  $respuesta["datos"]=$marca;
         }else{
-            $respuesta["mensaje"]="No se encontraron resultados";
+           return $respuesta["mensaje"]="No se encontraron resultados";
         }         
     }
 
