@@ -9,6 +9,7 @@ use App\Models\Habitacion;
 
 class HabitacionesController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -16,17 +17,16 @@ class HabitacionesController extends Controller
      */
     public function index()
     {
-       $datos=Habitacion::all();
+         $datos=Habitacion::all();
 
-       if($datos){
-        $respuesta["datos"]=$datos;
-    } else {
-        $respuesta["datos"]=[];
-        $respuesta["Mensaje"]="No se encontraron resultados";
+         if($datos){
+            $respuesta["datos"]=$datos;
+        } else {
+            $respuesta["datos"]=[];
+            $respuesta["Mensaje"]="No se encontraron resultados";
+        }
+        return $respuesta;
     }
-    return $respuesta;
-
-}
 
     /**
      * Show the form for creating a new resource.

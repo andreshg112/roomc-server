@@ -8,6 +8,7 @@ use App\Models\Administrador;
 
 use App\Models\Motel;
 use App\Models\Habitacion;
+use App\Models\EntradaSalida;
 class MotelesController extends Controller
 {
 
@@ -20,6 +21,20 @@ class MotelesController extends Controller
             $respuesta["mensaje"]="No se encontraron resultados";
             return $respuesta;
         }
+    }
+
+    public function getHabitacionesLibres($motel_id){
+        $habitaciones_ocupadas= EntradaSalida::select("habitacion")
+                                ->where("motel_id", $motel_id)
+                                ->whereNull('fecha_salida')
+                                ->get()
+                                ->toArray();
+        $habitaciones_libres=Habitacion::select("numero")
+                            ->where("motel_id", $motel_id)
+                            ->whereNotIn("numero", $habitaciones_ocupadas)
+                            ->get()
+                            ->toArray();
+        return $habitaciones_libres;
     }
 
     /**
@@ -48,7 +63,7 @@ class MotelesController extends Controller
             $respuesta["mensaje"]="Guardado correctamente";
             $respuesta["datos"]=$motel;
         } else {
-            $respuesta["mensaje"]="Error al guarda";           
+            $respuesta["mensaje"]="Error al guardar";           
         }
         return $respuesta;
     }

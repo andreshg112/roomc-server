@@ -20,6 +20,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::resource('/moteles', 'MotelesController');
 	Route::get('/moteles/{id}/habitaciones', 'MotelesController@getHabitaciones');
 
+	Route::get('/moteles/{id}/habitaciones-libres', 
+		        'MotelesController@getHabitacionesLibres');
+
 	Route::resource('/administradores', 'AdministradoresController');
 	Route::get('/administradores/{administrador_id}/moteles', 'AdministradoresController@getMotelesByAdministrador');
 
