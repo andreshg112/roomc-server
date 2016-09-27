@@ -25,6 +25,7 @@ class CreateTableMotel extends Migration
             ->onUpdate('cascade');
             $table->timestamps();
             $table->softDeletes();
+            $table->engine = 'InnoDB';
         }); 
     }
 

@@ -18,7 +18,8 @@ class CreateTableUsuarios extends Migration
             $table->string('username')->unique();
             $table->string('password'); 
             $table->timestamps();
-            //$table->softDeletes();           
+            $table->softDeletes();
+            $table->engine = 'InnoDB';           
         });
     }
     

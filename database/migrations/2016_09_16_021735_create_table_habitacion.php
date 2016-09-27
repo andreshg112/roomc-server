@@ -7,13 +7,13 @@ use Illuminate\Database\Migrations\Migration;
 class CreateTableHabitacion extends Migration
 {
     /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-   public function up()
+    * Run the migrations.
+    *
+    * @return void
+    */
+    public function up()
     {
-          Schema::create('habitaciones', function(Blueprint $table){
+        Schema::create('habitaciones', function(Blueprint $table){
             $table->increments('id');
             $table->integer('numero');
             $table->integer('motel_id')->unsigned();
@@ -23,14 +23,15 @@ class CreateTableHabitacion extends Migration
             ->onUpdate('cascade');
             $table->timestamps();
             $table->softDeletes();
-        }); 
+            $table->engine = 'InnoDB';
+        });
     }
-
+    
     /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    * Reverse the migrations.
+    *
+    * @return void
+    */
     public function down()
     {
         Schema::drop('habitaciones');

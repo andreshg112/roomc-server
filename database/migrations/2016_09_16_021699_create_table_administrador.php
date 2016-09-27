@@ -7,13 +7,13 @@ use Illuminate\Database\Migrations\Migration;
 class CreateTableAdministrador extends Migration
 {
     /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-   public function up()
+    * Run the migrations.
+    *
+    * @return void
+    */
+    public function up()
     {
-          Schema::create('administradores', function(Blueprint $table){
+        Schema::create('administradores', function(Blueprint $table){
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')
@@ -22,15 +22,16 @@ class CreateTableAdministrador extends Migration
             ->onDelete('cascade')
             ->onUpdate('cascade');
             $table->timestamps();
-            //$table->softDeletes();
-        }); 
+            $table->softDeletes();
+            $table->engine = 'InnoDB';
+        });
     }
-
+    
     /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    * Reverse the migrations.
+    *
+    * @return void
+    */
     public function down()
     {
         Schema::drop('administradores');

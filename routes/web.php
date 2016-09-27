@@ -12,7 +12,9 @@
 */
 
 Route::get('/', function () {
-	return view('welcome');
+	header('Location: https://twitter.com/Parking_Control');
+    die();
+	//return view('welcome');
 });
 
 //Todo lo que este dentro de este middleware, necesita ir con token.

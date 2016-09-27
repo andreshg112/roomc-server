@@ -6,18 +6,18 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateTableEntrada extends Migration
 {
-    /** 
-     * Run the migrations.
-     *
-     * @return void
-     */
+    /**
+    * Run the migrations.
+    *
+    * @return void
+    */
     public function up()
     {
         Schema::create('entradas_salidas', function(Blueprint $table){
             $table->increments('id');
             $table->datetime('fecha_entrada');
             $table->datetime('fecha_salida')->nullable();
-            $table->integer('tiempo')->nullable();            
+            $table->integer('tiempo')->nullable();
             $table->string('placa');
             $table->string('tipo_vehiculo');
             $table->string('color');
@@ -29,19 +29,20 @@ class CreateTableEntrada extends Migration
             ->onUpdate('cascade');
             $table->integer('motel_id')->unsigned();
             $table->foreign('motel_id')
-                ->references('id')
-                ->on('moteles')
-                ->onUpdate('cascade');
-             $table->integer('habitacion');
+            ->references('id')
+            ->on('moteles')
+            ->onUpdate('cascade');
+            $table->integer('habitacion');
             $table->timestamps();
             $table->softDeletes();
+            $table->engine = 'InnoDB';
         });
     }
     /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    * Reverse the migrations.
+    *
+    * @return void
+    */
     public function down()
     {
         Schema::drop('entradas_salidas');
