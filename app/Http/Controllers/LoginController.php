@@ -36,23 +36,30 @@ class LoginController extends Controller
         } else {
         $usuario = new Usuario($request->all());
         try {
-            $tipo_usuario="Portero";
+            
             $user = Usuario::where('username', $usuario->username)->first();
-            $admin = Administrador::where('user_id', $user->id)->first();
+            if($user){
+                $admin = Administrador::where('user_id', $user->id)->first();
 
-            if($admin){
-                $tipo_usuario="Administrador";
+                if($admin){
+                    $user["tipo_usuario"]="Administrador";
+                }else {
+                    $user["tipo_usuario"]="Portero";
+                }
+
+                if ( $user && password_verify($usuario->password, $user->password))  {
+                    $respuesta["mensaje"]="Bienvenido";
+                    $token = JWTAuth::fromUser($user, $this->getData($user));
+                    $respuesta["token"]=$token;
+                    $respuesta["user"]=$user;
+                    return $respuesta;
+                } else {
+                    return $respuesta["mensaje"]="Usuario o contraseña incorrecta";
+                }
+            }else{
+                return $respuesta["mensaje"]="Usuario o contraseña incorrecta";              
             }
-            $user["tipo_usuario"]=$tipo_usuario;
-            if ($user->password == $usuario->password)  {
-                $respuesta["mensaje"]="Bienvenido";
-                $token = JWTAuth::fromUser($user, $this->getData($user));
-                $respuesta["token"]=$token;
-                $respuesta["user"]=$user;
-                return $respuesta;
-            } else {
-                return $respuesta["mensaje"]="Usuario o contraseña incorrecta";
-            }
+
         } catch (JWTException $e) {
             return $respuesta["mensaje"]= 'No se pudo crear el token';
         }
