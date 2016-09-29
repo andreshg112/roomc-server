@@ -29,7 +29,6 @@ class EntradasSalidasController extends Controller
     }
 
 
-
     /**
      * Display a listing of the resource.
      *
@@ -58,14 +57,32 @@ class EntradasSalidasController extends Controller
      */
     public function store(Request $request)
     {
-        $entrada_salida = new EntradaSalida($request->all());
-        $entrada_salida->save();
-
-        if ($entrada_salida) {
-            $respuesta["mensaje"] = "Guardado correctamente";
-            $respuesta["datos"] = $entrada_salida;
+        $respuesta = [];
+        $rules = [
+            'fecha_entrada' => 'required|string',
+            'placa' => 'required|string',
+            'tipo_vehiculo' => 'required|string',
+            'color' => 'required|string',
+            'marca' => 'required|string',
+            'portero_id' => 'required|int',
+            'motel_id' => 'required|int',
+            'habitacion' => 'required|int',
+        ];
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $respuesta['result'] = false;
+            $respuesta['validator'] = $validator->errors()->all();
+            $respuesta['mensaje'] = 'Error: Faltan datos.';
         } else {
-            $respuesta["mensaje"] = "No se pudo guardar";
+            $entrada_salida = new EntradaSalida($request->all());
+            $entrada_salida->save();
+
+            if ($entrada_salida) {
+                $respuesta["mensaje"] = "Guardado correctamente";
+                $respuesta["result"] = $entrada_salida;
+            } else {
+                $respuesta["mensaje"] = "No se pudo guardar";
+            }
         }
 
         return $respuesta;
@@ -83,7 +100,7 @@ class EntradasSalidasController extends Controller
 
         if ($entrada_salida) {
             $respuesta["mensaje"] = "Guardado correctamente";
-            $respuesta["datos"] = $entrada_salida;
+            $respuesta["result"] = $entrada_salida;
         } else {
             $respuesta["mensaje"] = "No se pudo guardar";
         }
@@ -111,26 +128,41 @@ class EntradasSalidasController extends Controller
      */
     public function update(Request $request, $id)
     {
-        /* $datos=EntradaSalida::where("placa", $placa)
-        ->where("motel_id", $motel_id )->first();*/
-
-        $entrada_salida = EntradaSalida::find($id);
-        if ($entrada_salida) {
-            //Lo encuentra (por id)
-            $entrada_salida->fill($request->all());
-            $fecha_entrada = Carbon::createFromFormat('Y-m-d H:i:s', $entrada_salida->fecha_entrada);
-            $fecha_salida = Carbon::now();
-            $entrada_salida->fecha_salida = $fecha_salida;
-            $entrada_salida->tiempo = $fecha_salida->diffInSeconds($fecha_entrada);
-            $guardo = $entrada_salida->save();
-            if ($guardo) {
-                $respuesta['mensaje'] = "Actualizado correctamente.";
-                $respuesta['registro'] = $entrada_salida;
+        $respuesta = [];
+        $rules = [
+            'fecha_entrada' => 'required|string',
+            'placa' => 'required|string',
+            'tipo_vehiculo' => 'required|string',
+            'color' => 'required|string',
+            'marca' => 'required|string',
+            'portero_id' => 'required|int',
+            'motel_id' => 'required|int',
+            'habitacion' => 'required|int',
+        ];
+        $validator = \Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $respuesta['result'] = false;
+            $respuesta['validator'] = $validator->errors()->all();
+            $respuesta['mensaje'] = 'Error: Faltan datos.';
+        }else{
+            $entrada_salida = EntradaSalida::find($id)->first();
+            if ($entrada_salida) {
+                //Lo encuentra (por id)
+                $entrada_salida->fill($request->all());
+                $fecha_entrada = Carbon::createFromFormat('Y-m-d H:i:s', $entrada_salida->fecha_entrada);
+                $fecha_salida = Carbon::now();
+                $entrada_salida->fecha_salida = $fecha_salida;
+                $entrada_salida->tiempo = $fecha_salida->diffInSeconds($fecha_entrada);
+                $guardo = $entrada_salida->save();
+                if ($guardo) {
+                    $respuesta['mensaje'] = "Actualizado correctamente.";
+                    $respuesta['result'] = $entrada_salida;
+                } else {
+                    $respuesta['mensaje'] = "No puedo actualizarse.";
+                }
             } else {
-                $respuesta['mensaje'] = "No puedo actualizarse.";
+                $respuesta['mensaje'] = "No esta registrado.";
             }
-        } else {
-            $respuesta['mensaje'] = "No esta registrado.";
         }
         return $respuesta;
     }
