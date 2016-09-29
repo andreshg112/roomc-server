@@ -12,31 +12,33 @@
 */
 
 Route::get('/', function () {
-	header('Location: https://twitter.com/Parking_Control');
+    header('Location: https://twitter.com/Parking_Control');
     die();
-	//return view('welcome');
+    //return view('welcome');
 });
 
 //Todo lo que este dentro de este middleware, necesita ir con token.
 Route::group(['middleware' => 'jwt.auth'], function () {
-	Route::resource('/moteles', 'MotelesController');
-	Route::get('/moteles/{id}/habitaciones', 'MotelesController@getHabitaciones');
+    Route::resource('/moteles', 'MotelesController');
+    Route::get('/moteles/{id}/habitaciones', 'MotelesController@getHabitaciones');
 
-	Route::get('/moteles/{id}/habitaciones-libres', 
-		        'MotelesController@getHabitacionesLibres');
+    Route::get('/moteles/{id}/habitaciones-libres',
+        'MotelesController@getHabitacionesLibres');
 
-	Route::resource('/administradores', 'AdministradoresController');
-	Route::get('/administradores/{administrador_id}/moteles', 'AdministradoresController@getMotelesByAdministrador');
+    Route::get('/moteles/{motel_id}/vehiculos/{placa}',
+        'MotelesController@getVehiculo');
 
-	Route::resource('/entradas-salidas', 'EntradasSalidasController');
-	Route::get('/entradas-salidas/vehiculos/{estado}', 
-		'EntradasSalidasController@getAllVehiculos');
-	Route::get('/entradas-salidas/vehiculo/{placa}', 
-		'EntradasSalidasController@getVehiculo');
+    Route::resource('/administradores', 'AdministradoresController');
+    Route::get('/administradores/{administrador_id}/moteles', 'AdministradoresController@getMotelesByAdministrador');
 
-	Route::resource('/habitaciones', 'HabitacionesController');
+    Route::resource('/entradas-salidas', 'EntradasSalidasController');
 
-	Route::resource('/marcas', 'MarcasController');
+    Route::get('/entradas-salidas/vehiculos/{estado}',
+        'EntradasSalidasController@getAllVehiculos');
+
+    Route::resource('/habitaciones', 'HabitacionesController');
+
+    Route::resource('/marcas', 'MarcasController');
 });
 
 //El iniciar sesion queda fuera porque no se necesita token para iniciar sesion.
