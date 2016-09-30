@@ -43,18 +43,51 @@ class AdministradoresController extends Controller
 
     public function store(Request $request)
     {
-        //
+        $respuesta = [];
+        $messages = [
+            'required' => 'El campo :attribute es requerido.',
+            'exists' => 'El usuario que intenta asignar como administrador no existe',
+        ];
+        $rules = [
+            'user_id' => 'required|exists:usuarios,id|numeric'
+        ];
+        $validator = \Validator::make($request->all(), $rules, $messages);
+        if ($validator->fails()) {
+            $respuesta['result'] = false;
+            $respuesta['validator'] = $validator->errors()->all();
+        } else {
+            $administrador = new Administrador($request->all());
+            $result = $administrador->save();
+
+            if ($result) {
+                $respuesta["mensaje"] = "Guardado correctamente";
+                $respuesta["result"] = $administrador;
+            } else {
+                $respuesta["mensaje"] = "No se pudo guardar";
+            }
+        }
+
+        return $respuesta;
     }
 
     /**
     * Display the specified resource.
     *
-    * @param  int  $id
+    * @param  int  $user_id
     * @return \Illuminate\Http\Response
     */
-    public function show($id)
+    public function show($user_id)
     {
-        //
+        $administrador = Administrador::where("user_id", $user_id)->first();
+
+        if ($administrador) {
+            $respuesta["result"] = $administrador;
+        } else {
+            $respuesta["mensaje"] = "No se encontraron registros";
+            $respuesta["result"] = false;
+        }
+        return $respuesta;
+
     }
 
     /**
