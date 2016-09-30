@@ -19,5 +19,6 @@ class VerifyCsrfToken extends BaseVerifier
         'habitaciones*',
         'iniciar-sesion*',
         'porteros*',
+        'usuarios*',
     ];
 }

@@ -41,6 +41,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::resource('/marcas', 'MarcasController');
 
     Route::resource('/porteros', 'PorterosController');
+
+    Route::resource('/usuarios', 'UsuariosController');
 });
 
 //El iniciar sesion queda fuera porque no se necesita token para iniciar sesion.
