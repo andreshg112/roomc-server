@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Http\Requests;
 use App\Models\EntradaSalida;
+use App\Models\Administrador;
+use App\Models\Motel;
 
 class EntradasSalidasController extends Controller
 {
@@ -67,15 +69,14 @@ class EntradasSalidasController extends Controller
             'tipo_vehiculo' => 'required|string',
             'color' => 'required|string',
             'marca' => 'required|string',
-            'portero_id' => 'required|int',
-            'motel_id' => 'required|int',
-            'habitacion' => 'required|numeric',
+            'portero_id' => 'exists:porteros,id|required|int',
+            'motel_id' => 'exists:Moteles,id|required|int',
+            'habitacion' => 'exists:habitaciones,numero|required|numeric',
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
             $respuesta['result'] = false;
             $respuesta['validator'] = $validator->errors()->all();
-            $respuesta['mensaje'] = 'Error: Faltan datos.';
         } else {
             $entrada_salida = new EntradaSalida($request->all());
             $entrada_salida->save();
@@ -140,10 +141,11 @@ class EntradasSalidasController extends Controller
             'placa' => 'required|string',
             'tipo_vehiculo' => 'required|string',
             'color' => 'required|string',
+            'color' => 'required|string',
             'marca' => 'required|string',
-            'portero_id' => 'required|int',
-            'motel_id' => 'required|int',
-            'habitacion' => 'required|int',
+            'portero_id' => 'exists:porteros,id|required|int',
+            'motel_id' => 'exists:Moteles,id|required|int',
+            'habitacion' => 'exists:habitaciones,numero|required|numeric',
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {

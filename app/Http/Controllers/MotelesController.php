@@ -11,6 +11,7 @@ use App\Models\Motel;
 use App\Models\Habitacion;
 use App\Models\EntradaSalida;
 use App\Models\Vehiculo;
+use App\Models\Usuarios;
 
 class MotelesController extends Controller
 {
@@ -20,11 +21,12 @@ class MotelesController extends Controller
         $habitaciones = Habitacion::where("motel_id", $motel_id)->get();
 
         if ($habitaciones) {
-            return $habitaciones;
+            $respuesta["result"]= $habitaciones;
         } else {
             $respuesta["mensaje"] = "No se encontraron resultados";
-            return $respuesta;
+            $respuesta["result"]= false;
         }
+        return $respuesta;
     }
 
     public function getHabitacionesLibres($motel_id)
@@ -78,14 +80,33 @@ class MotelesController extends Controller
      */
     public function store(Request $request)
     {
-        $motel = new Motel($request->all());
-        $motel->save();
 
-        if ($motel) {
-            $respuesta["mensaje"] = "Guardado correctamente";
-            $respuesta["datos"] = $motel;
+        $respuesta = [];
+        $messages = [
+            'required' => 'El campo :attribute es requerido.',
+            'exists' => 'El usuario seleccionado como administrador no existe.',
+        ];
+        $rules = [
+            'nombre' => 'required|string',
+            'direccion' => 'required|string',
+            'telefono' => 'required|string',
+            'administrador_id' => 'required|exists:usuarios,id|numeric'
+        ];
+        $validator = \Validator::make($request->all(), $rules, $messages);
+        if ($validator->fails()) {
+            $respuesta['result'] = false;
+            $respuesta['validator'] = $validator->errors()->all();
         } else {
-            $respuesta["mensaje"] = "Error al guardar";
+            $motel = new Motel($request->all());
+            $motel->save();
+
+            if ($motel) {
+                $respuesta["mensaje"] = "Guardado correctamente";
+                $respuesta["result"] = $motel;
+            } else {
+                $respuesta["mensaje"] = "Error al guardar";
+                $respuesta["result"] = false;
+            }
         }
         return $respuesta;
     }

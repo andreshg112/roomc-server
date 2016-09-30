@@ -41,6 +41,7 @@ class HabitacionesController extends Controller
         $respuesta = [];
         $messages = [
             'required' => 'El campo :attribute es requerido.',
+            'unique' => 'El número ' . $request->numero . ' ya existe en el hotel.',
         ];
         $rules = [
             'numero' => 'required|numeric',
