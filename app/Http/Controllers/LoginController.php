@@ -27,12 +27,15 @@ class LoginController extends Controller
     {
         $respuesta = [];
         $codigo = 200;
+        $messages = [
+            'required' => 'El campo :attribute es requerido.',
+        ];
         $rules = [
             'username' => 'required|string',
             'password' => 'required|string',
         ];
         try {
-            $validator = \Validator::make($request->all(), $rules);
+            $validator = \Validator::make($request->all(), $rules, $messages);
             if ($validator->fails()) {
                 $respuesta['result'] = false;
                 $respuesta['validator'] = $validator->errors()->all();

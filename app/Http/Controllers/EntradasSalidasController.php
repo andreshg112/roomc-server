@@ -58,6 +58,9 @@ class EntradasSalidasController extends Controller
     public function store(Request $request)
     {
         $respuesta = [];
+        $messages = [
+            'required' => 'El campo :attribute es requerido.',
+        ];
         $rules = [
             'fecha_entrada' => 'required|string',
             'placa' => 'required|string',
@@ -66,9 +69,9 @@ class EntradasSalidasController extends Controller
             'marca' => 'required|string',
             'portero_id' => 'required|int',
             'motel_id' => 'required|int',
-            'habitacion' => 'required|int',
+            'habitacion' => 'required|numeric',
         ];
-        $validator = \Validator::make($request->all(), $rules);
+        $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
             $respuesta['result'] = false;
             $respuesta['validator'] = $validator->errors()->all();
@@ -129,6 +132,9 @@ class EntradasSalidasController extends Controller
     public function update(Request $request, $id)
     {
         $respuesta = [];
+        $messages = [
+            'required' => 'El campo :attribute es requerido.',
+        ];
         $rules = [
             'fecha_entrada' => 'required|string',
             'placa' => 'required|string',
@@ -139,12 +145,12 @@ class EntradasSalidasController extends Controller
             'motel_id' => 'required|int',
             'habitacion' => 'required|int',
         ];
-        $validator = \Validator::make($request->all(), $rules);
+        $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
             $respuesta['result'] = false;
             $respuesta['validator'] = $validator->errors()->all();
             $respuesta['mensaje'] = 'Error: Faltan datos.';
-        }else{
+        } else {
             $entrada_salida = EntradaSalida::find($id)->first();
             if ($entrada_salida) {
                 //Lo encuentra (por id)

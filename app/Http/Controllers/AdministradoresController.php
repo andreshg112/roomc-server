@@ -14,7 +14,7 @@ class AdministradoresController extends Controller
     public function getMotelesByAdministrador($user_id)
     {
         $datos=Administrador::where("user_id", $user_id)->first();
-        
+
         if($datos){
             $respuesta= Motel::all();
         } else {
@@ -22,7 +22,7 @@ class AdministradoresController extends Controller
         }
         return $respuesta;
     }
-    
+
     /**
     * Display a listing of the resource.
     *
@@ -31,36 +31,21 @@ class AdministradoresController extends Controller
     public function index()
     {
         $administradores=Administrador::all();
-        
+
         if($administradores){
-            return $administradores;
+             $respuesta["result"]=$administradores;
         } else {
-            return $respuesta["mensaje"]="No se encontraron registros";
+             $respuesta["mensaje"]="No se encontraron registros";
+            $respuesta["result"]=false;
         }
-        
+        return $respuesta;
     }
-    
-    /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-    public function create()
-    {
-        //
-    }
-    
-    /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
+
     public function store(Request $request)
     {
         //
     }
-    
+
     /**
     * Display the specified resource.
     *
@@ -71,7 +56,7 @@ class AdministradoresController extends Controller
     {
         //
     }
-    
+
     /**
     * Show the form for editing the specified resource.
     *
@@ -82,7 +67,7 @@ class AdministradoresController extends Controller
     {
         //
     }
-    
+
     /**
     * Update the specified resource in storage.
     *
@@ -94,7 +79,7 @@ class AdministradoresController extends Controller
     {
         //
     }
-    
+
     /**
     * Remove the specified resource from storage.
     *
