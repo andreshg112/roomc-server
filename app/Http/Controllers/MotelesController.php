@@ -15,7 +15,7 @@ use App\Models\Portero;
 
 class MotelesController extends Controller
 {
-
+    
     public function getHabitaciones($motel_id)
     {
         $habitaciones = Habitacion::where("motel_id", $motel_id)->get();
@@ -27,23 +27,23 @@ class MotelesController extends Controller
         }
         return $respuesta;
     }
-
+    
     public function getHabitacionesLibres($motel_id)
     {
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
         $habitaciones_ocupadas = EntradaSalida::select("habitacion")
-            ->whereIn("portero_id", $porteros_id)
-            ->whereNull('fecha_salida')
-            ->get()
-            ->toArray();
+        ->whereIn("portero_id", $porteros_id)
+        ->whereNull('fecha_salida')
+        ->get()
+        ->toArray();
         $habitaciones_libres = Habitacion::select("numero")
-            ->where("motel_id", $motel_id)
-            ->whereNotIn("numero", $habitaciones_ocupadas)
-            ->get()
-            ->toArray();
+        ->where("motel_id", $motel_id)
+        ->whereNotIn("numero", $habitaciones_ocupadas)
+        ->get()
+        ->toArray();
         return $habitaciones_libres;
     }
-
+    
     public function getAllVehiculos(Request $request, $motel_id)
     {
         $estan_dentro = $request->input('estan_dentro', 1);
@@ -57,48 +57,42 @@ class MotelesController extends Controller
         }
         $respuesta["result"] = $datos->get();
         if (!$respuesta["result"]) {
-            //Ehhh... creo que retorn un array vacio.Deja ver algo
             $respuesta["mensaje"] = "No se encontraron registros.";
         }
         return $respuesta;
     }
-
+    
     public function getVehiculo($motel_id, $placa)
     {
         $respuesta = []; //Siempre es bueno inicializar.
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
         $respuesta['result'] = EntradaSalida::whereIn("portero_id", $porteros_id)
-            ->where('placa', $placa)->first();
-        if ($respuesta['result']) {
-            /*$fecha_entrada = Carbon::createFromFormat('Y-m-d H:i:s', $respuesta['result']->fecha_entrada);
-            $fecha_salida = Carbon::now();
-            $respuesta['result']->fecha_salida = $fecha_salida;
-            $respuesta['result']->tiempo = $fecha_salida->diffInSeconds($fecha_entrada);*/
-        } else {
-            $respuesta['result'] = false;
-            $respuesta['mensaje'] = 'No se encuentra el vehiculo con esa placa.';
+        ->whereNull('fecha_salida')
+        ->where('placa', $placa)->first();
+        if (!$respuesta['result']) {
+            $respuesta['mensaje'] = 'El vehículo con la placa '.strtoupper($placa).' no se encuentra dentro del motel.';
         }
         return $respuesta;
     }
-
+    
     /**
-     * Store a newly created resource in storage.
-     * POST /moteles
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
+    * Store a newly created resource in storage.
+    * POST /moteles
+    * @param  \Illuminate\Http\Request $request
+    * @return \Illuminate\Http\Response
+    */
     public function store(Request $request)
     {
         $respuesta = [];
         $messages = [
-            'required' => 'El campo :attribute es requerido.',
-            'exists' => 'El usuario seleccionado como administrador no existe.',
+        'required' => 'El campo :attribute es requerido.',
+        'exists' => 'El usuario seleccionado como administrador no existe.',
         ];
         $rules = [
-            'nombre' => 'required|string',
-            'direccion' => 'required|string',
-            'telefono' => 'required|string',
-            'administrador_id' => 'required|exists:usuarios,id|numeric'
+        'nombre' => 'required|string',
+        'direccion' => 'required|string',
+        'telefono' => 'required|string',
+        'administrador_id' => 'required|exists:usuarios,id|numeric'
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
@@ -107,7 +101,7 @@ class MotelesController extends Controller
         } else {
             $motel = new Motel($request->all());
             $motel->save();
-
+            
             if ($motel) {
                 $respuesta["mensaje"] = "Guardado correctamente";
                 $respuesta["result"] = $motel;
@@ -118,13 +112,13 @@ class MotelesController extends Controller
         }
         return $respuesta;
     }
-
+    
     /**
-     * Display the specified resource.
-     * GET  /moteles/{id}
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
+    * Display the specified resource.
+    * GET  /moteles/{id}
+    * @param  int $id
+    * @return \Illuminate\Http\Response
+    */
     public function show($id)
     {
         $motel = Motel::where("id", $id)->first();

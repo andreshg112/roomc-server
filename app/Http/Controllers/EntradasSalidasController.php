@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use App\Http\Requests;
 use App\Models\EntradaSalida;
 use App\Models\Administrador;
-use App\Models\Motel;
 
 class EntradasSalidasController extends Controller
 {
@@ -40,7 +39,6 @@ class EntradasSalidasController extends Controller
             'color' => 'required|string',
             'marca' => 'required|string',
             'portero_id' => 'exists:porteros,id|required|int',
-            'motel_id' => 'exists:moteles,id|required|int',
             'habitacion' => 'exists:habitaciones,numero|required|numeric',
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
@@ -70,15 +68,13 @@ class EntradasSalidasController extends Controller
      */
     public function show($id)
     {
-        $entrada_salida = EntradaSalida::where("id", $id)->first();
-
+        $entrada_salida = EntradaSalida::find($id);
         if ($entrada_salida) {
-            $respuesta["mensaje"] = "Guardado correctamente";
+            $respuesta["mensaje"] = "Registro encontrado";
             $respuesta["result"] = $entrada_salida;
         } else {
             $respuesta["mensaje"] = "No se pudo guardar";
         }
-
         return $respuesta;
     }
     
@@ -103,7 +99,6 @@ class EntradasSalidasController extends Controller
             'color' => 'required|string',
             'marca' => 'required|string',
             'portero_id' => 'exists:porteros,id|required|int',
-            'motel_id' => 'exists:moteles,id|required|int',
             'habitacion' => 'exists:habitaciones,numero|required|numeric',
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
