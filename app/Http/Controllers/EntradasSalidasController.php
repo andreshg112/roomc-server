@@ -11,11 +11,8 @@ use App\Models\Motel;
 
 class EntradasSalidasController extends Controller
 {
-
-
     public function getAllVehiculos($estado)
     {
-
         if ($estado == "dentro") {
             $datos = EntradaSalida::whereNull('fecha_salida')->get();
         } else {
@@ -27,9 +24,7 @@ class EntradasSalidasController extends Controller
         } else {
             return $respuesta["mensaje"] = "No se encontraron registros.";
         }
-
     }
-
 
     /**
      * Display a listing of the resource.
@@ -39,16 +34,6 @@ class EntradasSalidasController extends Controller
     public function index()
     {
         return EntradaSalida::all();
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -70,7 +55,6 @@ class EntradasSalidasController extends Controller
             'color' => 'required|string',
             'marca' => 'required|string',
             'portero_id' => 'exists:porteros,id|required|int',
-            'motel_id' => 'exists:Moteles,id|required|int',
             'habitacion' => 'exists:habitaciones,numero|required|numeric',
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
@@ -101,7 +85,7 @@ class EntradasSalidasController extends Controller
     public function show($id)
     {
         $entrada_salida = EntradaSalida::where("id", $id)->first();
-
+        //Como asi que guardado correctamente?
         if ($entrada_salida) {
             $respuesta["mensaje"] = "Guardado correctamente";
             $respuesta["result"] = $entrada_salida;
@@ -110,17 +94,6 @@ class EntradasSalidasController extends Controller
         }
 
         return $respuesta;
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -141,10 +114,8 @@ class EntradasSalidasController extends Controller
             'placa' => 'required|string',
             'tipo_vehiculo' => 'required|string',
             'color' => 'required|string',
-            'color' => 'required|string',
             'marca' => 'required|string',
             'portero_id' => 'exists:porteros,id|required|int',
-            'motel_id' => 'exists:Moteles,id|required|int',
             'habitacion' => 'exists:habitaciones,numero|required|numeric',
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);

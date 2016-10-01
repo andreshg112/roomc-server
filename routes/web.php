@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 //Todo lo que este dentro de este middleware, necesita ir con token.
 Route::group(['middleware' => 'jwt.auth'], function () {
-    Route::resource('/moteles', 'MotelesController');
+    Route::resource('/moteles', 'MotelesController', ['only' => 'store', 'show']);
     Route::get('/moteles/{id}/habitaciones', 'MotelesController@getHabitaciones');
 
     Route::get('/moteles/{id}/habitaciones-libres',
