@@ -11,21 +11,6 @@ use App\Models\Motel;
 
 class EntradasSalidasController extends Controller
 {
-    public function getAllVehiculos($estado)
-    {
-        if ($estado == "dentro") {
-            $datos = EntradaSalida::whereNull('fecha_salida')->get();
-        } else {
-            $datos = EntradaSalida::whereNotNull("fecha_salida")->get();
-        }
-
-        if ($datos) {
-            return $datos;
-        } else {
-            return $respuesta["mensaje"] = "No se encontraron registros.";
-        }
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -55,6 +40,7 @@ class EntradasSalidasController extends Controller
             'color' => 'required|string',
             'marca' => 'required|string',
             'portero_id' => 'exists:porteros,id|required|int',
+            'motel_id' => 'exists:moteles,id|required|int',
             'habitacion' => 'exists:habitaciones,numero|required|numeric',
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
@@ -85,7 +71,7 @@ class EntradasSalidasController extends Controller
     public function show($id)
     {
         $entrada_salida = EntradaSalida::where("id", $id)->first();
-        //Como asi que guardado correctamente?
+
         if ($entrada_salida) {
             $respuesta["mensaje"] = "Guardado correctamente";
             $respuesta["result"] = $entrada_salida;
@@ -95,7 +81,7 @@ class EntradasSalidasController extends Controller
 
         return $respuesta;
     }
-
+    
     /**
      * Update the specified resource in storage.
      *
@@ -114,8 +100,10 @@ class EntradasSalidasController extends Controller
             'placa' => 'required|string',
             'tipo_vehiculo' => 'required|string',
             'color' => 'required|string',
+            'color' => 'required|string',
             'marca' => 'required|string',
             'portero_id' => 'exists:porteros,id|required|int',
+            'motel_id' => 'exists:moteles,id|required|int',
             'habitacion' => 'exists:habitaciones,numero|required|numeric',
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
@@ -144,17 +132,5 @@ class EntradasSalidasController extends Controller
             }
         }
         return $respuesta;
-    }
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

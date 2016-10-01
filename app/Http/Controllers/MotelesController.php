@@ -20,10 +20,10 @@ class MotelesController extends Controller
     {
         $habitaciones = Habitacion::where("motel_id", $motel_id)->get();
         if ($habitaciones) {
-            $respuesta["result"]= $habitaciones;
+            $respuesta["result"] = $habitaciones;
         } else {
             $respuesta["mensaje"] = "No se encontraron resultados";
-            $respuesta["result"]= false;
+            $respuesta["result"] = false;
         }
         return $respuesta;
     }
@@ -42,6 +42,25 @@ class MotelesController extends Controller
             ->get()
             ->toArray();
         return $habitaciones_libres;
+    }
+
+    public function getAllVehiculos(Request $request, $motel_id)
+    {
+        $estan_dentro = $request->input('estan_dentro', 1);
+        $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
+        $consulta_base = EntradaSalida::whereIn('portero_id', $porteros_id);
+        if ($estan_dentro) {
+            //Si estan dentro. Es lo mismo que $estan_dentro == 1
+            $datos = $consulta_base->whereNull('fecha_salida');
+        } else {
+            $datos = $consulta_base->whereNotNull("fecha_salida");
+        }
+        $respuesta["result"] = $datos->get();
+        if (!$respuesta["result"]) {
+            //Ehhh... creo que retorn un array vacio.Deja ver algo
+            $respuesta["mensaje"] = "No se encontraron registros.";
+        }
+        return $respuesta;
     }
 
     public function getVehiculo($motel_id, $placa)
@@ -108,6 +127,13 @@ class MotelesController extends Controller
      */
     public function show($id)
     {
-        return Motel::find($id)->first();
+        $motel = Motel::where("id", $id)->first();
+        if ($motel) {
+            $respuesta["result"] = $motel;
+        } else {
+            $respuesta["mensaje"] = "No se encontraron registros";
+            $respuesta["result"] = false;
+        }
+        return $respuesta;
     }
 }

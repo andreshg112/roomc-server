@@ -13,13 +13,8 @@ class CreateTableMarca extends Migration
     */
     public function up()
     {
-        Schema::create('marcas', function(Blueprint $table){
-            $table->increments('id');
-            $table->string('marca');
-            $table->timestamps();
-            $table->softDeletes();
-            $table->engine = 'InnoDB';
-        });
+        Schema::drop('marcas');
+
     }
     
     /**
@@ -29,6 +24,12 @@ class CreateTableMarca extends Migration
     */
     public function down()
     {
-        Schema::drop('marcas');
+        Schema::create('marcas', function(Blueprint $table){
+            $table->increments('id');
+            $table->string('marca');
+            $table->timestamps();
+            $table->softDeletes();
+            $table->engine = 'InnoDB';
+        });
     }
 }

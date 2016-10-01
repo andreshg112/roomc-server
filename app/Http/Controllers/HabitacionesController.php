@@ -76,7 +76,7 @@ class HabitacionesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param  int $numero
      * @return \Illuminate\Http\Response
      */
     public function show($numero)
@@ -88,39 +88,5 @@ class HabitacionesController extends Controller
         } else {
             return $respuesta["mensaje"] = "No se encontraron resultados";
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

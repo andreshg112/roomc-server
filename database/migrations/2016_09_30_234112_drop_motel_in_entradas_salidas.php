@@ -27,7 +27,7 @@ class DropMotelInEntradasSalidas extends Migration
     public function down()
     {
         Schema::table('entradas_salidas', function (Blueprint $table) {
-            $table->integer('motel_id')->unsigned()->after('portero_id');
+            $table->integer('motel_id')->unsigned()->after('portero_id')->nullable();
             $table->foreign('motel_id')
             ->references('id')
             ->on('moteles')

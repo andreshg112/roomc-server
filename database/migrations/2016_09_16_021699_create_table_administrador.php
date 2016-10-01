@@ -19,7 +19,6 @@ class CreateTableAdministrador extends Migration
             $table->foreign('user_id')
             ->references('id')
             ->on('usuarios')
-            ->onDelete('cascade')
             ->onUpdate('cascade');
             $table->timestamps();
             $table->softDeletes();
