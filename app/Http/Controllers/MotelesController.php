@@ -51,7 +51,7 @@ class MotelesController extends Controller
         } else {
             $respuesta["mensaje"] = "No hay registros.";
         }
-        return $habitaciones_libres;
+        return $respuesta;
     }
     
     public function getAllVehiculos(Request $request, $motel_id)
