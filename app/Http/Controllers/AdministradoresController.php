@@ -13,16 +13,15 @@ class AdministradoresController extends Controller
 {
     public function getMotelesByAdministrador($user_id)
     {
-        $datos=Administrador::where("user_id", $user_id)->first();
-
+        $datos = Administrador::where("user_id", $user_id)->first();
         if($datos){
-            $respuesta= Motel::all();
+            $respuesta = Motel::all();
         } else {
             $respuesta['mensaje'] = "Usted no es Administrador no tiene permiso.";
         }
         return $respuesta;
     }
-
+    
     /**
     * Display a listing of the resource.
     *
@@ -31,25 +30,25 @@ class AdministradoresController extends Controller
     public function index()
     {
         $administradores=Administrador::all();
-
+        
         if($administradores){
-             $respuesta["result"]=$administradores;
+            $respuesta["result"]=$administradores;
         } else {
-             $respuesta["mensaje"]="No se encontraron registros";
+            $respuesta["mensaje"]="No se encontraron registros";
             $respuesta["result"]=false;
         }
         return $respuesta;
     }
-
+    
     public function store(Request $request)
     {
         $respuesta = [];
         $messages = [
-            'required' => 'El campo :attribute es requerido.',
-            'exists' => 'El usuario que intenta asignar como administrador no existe',
+        'required' => 'El campo :attribute es requerido.',
+        'exists' => 'El usuario que intenta asignar como administrador no existe',
         ];
         $rules = [
-            'user_id' => 'required|exists:usuarios,id|numeric'
+        'user_id' => 'required|exists:usuarios,id|numeric'
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
@@ -58,7 +57,7 @@ class AdministradoresController extends Controller
         } else {
             $administrador = new Administrador($request->all());
             $result = $administrador->save();
-
+            
             if ($result) {
                 $respuesta["mensaje"] = "Guardado correctamente";
                 $respuesta["result"] = $administrador;
@@ -66,10 +65,10 @@ class AdministradoresController extends Controller
                 $respuesta["mensaje"] = "No se pudo guardar";
             }
         }
-
+        
         return $respuesta;
     }
-
+    
     /**
     * Display the specified resource.
     *
@@ -79,7 +78,7 @@ class AdministradoresController extends Controller
     public function show($user_id)
     {
         $administrador = Administrador::where("user_id", $user_id)->first();
-
+        
         if ($administrador) {
             $respuesta["result"] = $administrador;
         } else {
@@ -87,6 +86,6 @@ class AdministradoresController extends Controller
             $respuesta["result"] = false;
         }
         return $respuesta;
-
+        
     }
 }

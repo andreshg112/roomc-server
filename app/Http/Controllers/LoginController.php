@@ -16,28 +16,30 @@ use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class LoginController extends Controller
 {
-
+    
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
+    * Store a newly created resource in storage.
+    *
+    * @param  \Illuminate\Http\Request $request
+    * @return \Illuminate\Http\Response
+    */
     public function store(Request $request)
     {
         $respuesta = [];
         $codigo = 200;
+        //Por defecto sera false.
+        //result sera un objeto diferente a false,  si la operacion es exitosa.
+        $respuesta['result'] = false;
         $messages = [
-            'required' => 'El campo :attribute es requerido.',
+        'required' => 'El campo :attribute es requerido.',
         ];
         $rules = [
-            'username' => 'required|string',
-            'password' => 'required|string',
+        'username' => 'required|string',
+        'password' => 'required|string',
         ];
         try {
             $validator = \Validator::make($request->all(), $rules, $messages);
             if ($validator->fails()) {
-                $respuesta['result'] = false;
                 $respuesta['validator'] = $validator->errors()->all();
                 $respuesta['mensaje'] = 'Error: Faltan datos.';
             } else {
@@ -45,19 +47,23 @@ class LoginController extends Controller
                 try {
                     $user = Usuario::where('username', $usuario->username)->first();
                     if ($user) {
-                        $admin = Administrador::where('user_id', $user->id)->first();
-                        if ($admin) {
-                            $user["tipo_usuario"] = "Administrador";
-                        } else {
-                            $user["tipo_usuario"] = "Portero";
-                        }
+                        //Cualquier tipo de verificacion adicional
+                        //O que se agreguen datos a la consulta, se ejecutan despues de verificar
+                        //La contraseña
                         if ($user && password_verify($usuario->password, $user->password)) {
-                            $respuesta["mensaje"] = "Bienvenido";
-                            $token = JWTAuth::fromUser($user, $this->getData($user));
-                            $respuesta["token"] = $token;
-                            $respuesta["user"] = $user;
+                            if($user->tipo_usuario == 'ADMIN') {
+                                $user->load('administrador', 'administrador.moteles'); //Carga los moteles
+                                //de un administrador. Ver modelo Administrador.
+                            } elseif ($user->tipo_usuario == 'PORTERO') {
+                                //Carga el motel de un portero
+                                $user->load(['portero', 'portero.motel']);
+                            }
+                            $respuesta['mensaje'] = "¡Bienvenido $user->primer_nombre $user->primer_apellido!";
+                            $token = JWTAuth::fromUser($user); //No se necesita el this->getData
+                            $respuesta['token'] = $token;
+                            $respuesta['result'] = $user;
                         } else {
-                            $respuesta["mensaje"] = "Usuario o contraseña incorrecta.";
+                            $respuesta['mensaje'] = 'Usuario o contraseña incorrecta.';
                         }
                     } else {
                         $respuesta["mensaje"] = "Usuario o contraseña incorrecta.";
@@ -70,22 +76,5 @@ class LoginController extends Controller
             $respuesta['error'] = $e->getMessage();
         }
         return response()->json($respuesta, $codigo);
-    }
-
-    private function getData($user)
-    {
-        $data = [
-            'usuario' => [
-                'username' => $user->id
-            ]];
-
-        $usuario = Usuario::where('username', $user->username)->first();
-        if ($usuario) {
-            $data['usuario']['datos'] = [
-                'id' => $usuario->id,
-                'username' => $usuario->username
-            ];
-        }
-        return $data;
     }
 }
