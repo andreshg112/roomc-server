@@ -39,7 +39,7 @@ class EntradasSalidasController extends Controller
             'color' => 'required|string',
             'marca' => 'required|string',
             'portero_id' => 'exists:porteros,id|required|int',
-            'habitacion' => 'exists:habitaciones,numero|required|numeric',
+            'habitacion_id' => 'exists:habitaciones,id|required|numeric',
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
@@ -99,7 +99,7 @@ class EntradasSalidasController extends Controller
             'color' => 'required|string',
             'marca' => 'required|string',
             'portero_id' => 'exists:porteros,id|required|int',
-            'habitacion' => 'exists:habitaciones,numero|required|numeric',
+            'habitacion_id' => 'exists:habitaciones,id|required|numeric',
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {

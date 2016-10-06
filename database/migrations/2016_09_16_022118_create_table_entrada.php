@@ -18,10 +18,10 @@ class CreateTableEntrada extends Migration
             $table->datetime('fecha_entrada');
             $table->datetime('fecha_salida')->nullable();
             $table->integer('tiempo')->nullable();
-            $table->string('placa');
-            $table->string('tipo_vehiculo');
-            $table->string('color');
-            $table->string('marca');
+            $table->string('placa', 10);
+            $table->string('tipo_vehiculo', 30);
+            $table->string('color', 10);
+            $table->string('marca', 20);
             $table->integer('portero_id')->unsigned();
             $table->foreign('portero_id')
             ->references('id')
@@ -32,7 +32,11 @@ class CreateTableEntrada extends Migration
             ->references('id')
             ->on('moteles')
             ->onUpdate('cascade');
-            $table->integer('habitacion');
+            $table->integer('habitacion_id')->unsigned();
+            $table->foreign('habitacion_id')
+                ->references('id')
+                ->on('hanitaciones')
+                ->onUpdate('cascade');
             $table->timestamps();
             $table->softDeletes();
             $table->engine = 'InnoDB';

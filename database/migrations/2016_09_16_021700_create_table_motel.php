@@ -15,9 +15,9 @@ class CreateTableMotel extends Migration
     {
           Schema::create('moteles', function(Blueprint $table){
             $table->increments('id');
-            $table->string('nombre');
-            $table->string('direccion');
-            $table->string('telefono');
+            $table->string('nombre', 50);
+            $table->string('direccion', 50);
+            $table->string('telefono', 20);
             $table->integer('administrador_id')->unsigned();
             $table->foreign('administrador_id')
             ->references('id')

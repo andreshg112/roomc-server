@@ -13,7 +13,7 @@ class CreateTableMarca extends Migration
     */
     public function up()
     {
-        Schema::drop('marcas');
+        //Schema::drop('marcas');
 
     }
     
