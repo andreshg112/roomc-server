@@ -41,7 +41,7 @@ class EntradasSalidasController extends Controller
         $messages = [
         'required' => 'El campo :attribute es requerido.',
         ];
-        $datos = $request->all();
+        $datos_recibidos = $request->all();
         $rules = [
         'fecha_entrada' => 'required|string',
         'placa' => 'required|string',
@@ -50,7 +50,7 @@ class EntradasSalidasController extends Controller
         'marca' => 'required|string',
         'portero_id' => 'exists:porteros,id|required|integer',
         'motel_id' => 'exists:moteles,id|required|integer',
-        'habitacion_id' => 'required|integer|exists:habitaciones,id,motel_id,'.$datos['motel_id']
+        'habitacion_id' => 'required|integer|exists:habitaciones,id,motel_id,'.$datos_recibidos['motel_id']
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
@@ -101,6 +101,7 @@ class EntradasSalidasController extends Controller
         $messages = [
         'required' => 'El campo :attribute es requerido.',
         ];
+        $datos_recibidos = $request->all();
         $rules = [
         'fecha_entrada' => 'required|string',
         'placa' => 'required|string',
@@ -110,7 +111,7 @@ class EntradasSalidasController extends Controller
         'marca' => 'required|string',
         'portero_id' => 'exists:porteros,id|required|int',
         'motel_id' => 'exists:moteles,id|required|integer',
-        'habitacion_id' => 'required|integer|exists:habitaciones,id,motel_id,'.$datos['motel_id']
+        'habitacion_id' => 'required|integer|exists:habitaciones,id,motel_id,'.$datos_recibidos['motel_id']
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
