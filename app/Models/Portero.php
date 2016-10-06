@@ -14,4 +14,9 @@ class Portero extends Model
     {
         return $this->belongsTo(Motel::class);
     }
+
+    public function usuario()
+    {
+        return $this->belongsTo(Usuario::class, 'user_id');
+    }
 }

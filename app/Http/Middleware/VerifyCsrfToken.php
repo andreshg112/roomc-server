@@ -15,7 +15,6 @@ class VerifyCsrfToken extends BaseVerifier
         'moteles*',
         'administradores*',
         'entradas-salidas*',
-        'marcas*',
         'habitaciones*',
         'iniciar-sesion*',
         'porteros*',

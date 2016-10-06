@@ -43,12 +43,11 @@ class EntradasSalidasController extends Controller
         ];
         $datos_recibidos = $request->all();
         $rules = [
-        'fecha_entrada' => 'required|string',
         'placa' => 'required|string',
-        'tipo_vehiculo' => 'required|string',
+        'tipo_vehiculo' => 'required|string|in:automovil,motocicleta,taxi',
         'color' => 'required|string',
         'marca' => 'required|string',
-        'portero_id' => 'exists:porteros,id|required|integer',
+        'portero_id' => 'required|integer|exists:porteros,id,motel_id,'.$datos_recibidos['motel_id'],
         'motel_id' => 'exists:moteles,id|required|integer',
         'habitacion_id' => 'required|integer|exists:habitaciones,id,motel_id,'.$datos_recibidos['motel_id']
         ];
@@ -58,6 +57,7 @@ class EntradasSalidasController extends Controller
             $respuesta['validator'] = $validator->errors()->all();
         } else {
             $entrada_salida = new EntradaSalida($request->all());
+            $entrada_salida->fecha_entrada = Carbon::now()->toDateTimeString();
             if ($entrada_salida->save()) {
                 $respuesta["mensaje"] = "Guardado correctamente";
                 $respuesta["result"] = $entrada_salida;
@@ -103,7 +103,8 @@ class EntradasSalidasController extends Controller
         ];
         $datos_recibidos = $request->all();
         $rules = [
-        'fecha_entrada' => 'required|string',
+        'fecha_salida' => 'required|date',
+        'tiempo' => 'required|integer',
         'placa' => 'required|string',
         'tipo_vehiculo' => 'required|string',
         'color' => 'required|string',
@@ -122,10 +123,6 @@ class EntradasSalidasController extends Controller
             if ($entrada_salida) {
                 //Lo encuentra (por id)
                 $entrada_salida->fill($request->all());
-                $fecha_entrada = Carbon::createFromFormat('Y-m-d H:i:s', $entrada_salida->fecha_entrada);
-                $fecha_salida = Carbon::now();
-                $entrada_salida->fecha_salida = $fecha_salida;
-                $entrada_salida->tiempo = $fecha_salida->diffInSeconds($fecha_entrada);
                 $guardo = $entrada_salida->save();
                 if ($guardo) {
                     $respuesta['mensaje'] = "Se marcó la salida correctamente.";

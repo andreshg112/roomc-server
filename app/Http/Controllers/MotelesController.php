@@ -81,10 +81,14 @@ class MotelesController extends Controller
         $respuesta = [];
         $respuesta['result'] = false;
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
-        $result = EntradaSalida::whereIn("portero_id", $porteros_id)
+        $result = EntradaSalida::with(['portero', 'portero.usuario'])->whereIn("portero_id", $porteros_id)
         ->whereNull('fecha_salida')
         ->where('placa', $placa)->first();
         if ($result) {
+            $fecha_entrada = Carbon::createFromFormat('Y-m-d H:i:s', $result->fecha_entrada);
+            $fecha_salida = Carbon::now();
+            $result->fecha_salida = $fecha_salida->toDateTimeString();
+            $result->tiempo = $fecha_salida->diffInSeconds($fecha_entrada);
             $respuesta['result'] = $result;
         }else {
             $respuesta['mensaje'] = 'El vehículo con la placa '.strtoupper($placa).' no se encuentra dentro del motel.';

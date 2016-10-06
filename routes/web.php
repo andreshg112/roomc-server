@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 Route::group(['middleware' => 'jwt.auth'], function () {
 
-    Route::resource('/moteles', 'MotelesController', ['only' => 'store', 'show']);
+    Route::resource('/moteles', 'MotelesController', ['only' => ['store', 'show']]);
     Route::get('/moteles/{id}/habitaciones', 'MotelesController@getHabitaciones');
 
     Route::get('/moteles/{id}/habitaciones-libres',
@@ -31,16 +31,16 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/moteles/{motel_id}/vehiculos',
         'MotelesController@getAllVehiculos');
 
-    Route::resource('/administradores', 'AdministradoresController', ['only' => 'store', 'show']);
+    Route::resource('/administradores', 'AdministradoresController', ['only' => ['store', 'show']]);
     Route::get('/administradores/{administrador_id}/moteles', 'AdministradoresController@getMotelesByAdministrador');
 
-    Route::resource('/entradas-salidas', 'EntradasSalidasController', ['only' => 'store', 'show', 'update']);
+    Route::resource('/entradas-salidas', 'EntradasSalidasController', ['only' => ['store', 'show', 'update']]);
 
-    Route::resource('/habitaciones', 'HabitacionesController', ['only' => 'store', 'show']);
+    Route::resource('/habitaciones', 'HabitacionesController', ['only' => ['store', 'show']]);
 
-    Route::resource('/porteros', 'PorterosController', ['only' => 'store', 'show']);
+    Route::resource('/porteros', 'PorterosController', ['only' => ['store', 'show']]);
 
-    Route::resource('/usuarios', 'UsuariosController', ['only' => 'store', 'show']);
+    Route::resource('/usuarios', 'UsuariosController', ['only' => ['store', 'show']]);
 
 });
 
