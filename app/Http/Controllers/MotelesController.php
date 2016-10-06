@@ -15,37 +15,49 @@ use App\Models\Portero;
 
 class MotelesController extends Controller
 {
-    
     public function getHabitaciones($motel_id)
     {
+        $respuesta = [];
+        $respuesta['result'] = false;
         $habitaciones = Habitacion::where("motel_id", $motel_id)->get();
-        if ($habitaciones) {
+        if (count($habitaciones) > 0) {
             $respuesta["result"] = $habitaciones;
         } else {
-            $respuesta["mensaje"] = "No se encontraron resultados";
-            $respuesta["result"] = false;
+            $respuesta["mensaje"] = "No hay registros.";
         }
         return $respuesta;
     }
     
     public function getHabitacionesLibres($motel_id)
     {
+        $respuesta = [];
+        $respuesta['result'] = false;
+        //Se consultan los porteros de un motel
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
+        //Habitaciones ocupadas de ese motel
         $habitaciones_ocupadas = EntradaSalida::select("habitacion")
         ->whereIn("portero_id", $porteros_id)
         ->whereNull('fecha_salida')
         ->get()
         ->toArray();
+        //Habitaciones libres a partir de las ocupadas
         $habitaciones_libres = Habitacion::select("numero")
         ->where("motel_id", $motel_id)
         ->whereNotIn("numero", $habitaciones_ocupadas)
         ->get()
         ->toArray();
+        if(count($habitaciones_libres) > 0) {
+            $respuesta["result"] = $habitaciones_libres;
+        } else {
+            $respuesta["mensaje"] = "No hay registros.";
+        }
         return $habitaciones_libres;
     }
     
     public function getAllVehiculos(Request $request, $motel_id)
     {
+        $respuesta = [];
+        $respuesta['result'] = false;
         $estan_dentro = $request->input('estan_dentro', 1);
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
         $consulta_base = EntradaSalida::whereIn('portero_id', $porteros_id);
@@ -55,21 +67,26 @@ class MotelesController extends Controller
         } else {
             $datos = $consulta_base->whereNotNull("fecha_salida");
         }
-        $respuesta["result"] = $datos->get();
-        if (!$respuesta["result"]) {
-            $respuesta["mensaje"] = "No se encontraron registros.";
+        $result = $datos->get();
+        if (count($result) > 0) {
+            $respuesta["result"] = $result;
+        } else {
+            $respuesta["mensaje"] = "No hay registros.";
         }
         return $respuesta;
     }
     
     public function getVehiculo($motel_id, $placa)
     {
-        $respuesta = []; //Siempre es bueno inicializar.
+        $respuesta = [];
+        $respuesta['result'] = false;
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
-        $respuesta['result'] = EntradaSalida::whereIn("portero_id", $porteros_id)
+        $result = EntradaSalida::whereIn("portero_id", $porteros_id)
         ->whereNull('fecha_salida')
         ->where('placa', $placa)->first();
-        if (!$respuesta['result']) {
+        if ($result) {
+            $respuesta['result'] = $result;
+        }else {
             $respuesta['mensaje'] = 'El vehículo con la placa '.strtoupper($placa).' no se encuentra dentro del motel.';
         }
         return $respuesta;
@@ -83,7 +100,8 @@ class MotelesController extends Controller
     */
     public function store(Request $request)
     {
-        $respuesta = [];
+        $respuesta = []; //Siempre es bueno inicializar.
+        $respuesta['result'] = false;
         $messages = [
         'required' => 'El campo :attribute es requerido.',
         'exists' => 'El usuario seleccionado como administrador no existe.',
@@ -96,18 +114,15 @@ class MotelesController extends Controller
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
-            $respuesta['result'] = false;
             $respuesta['validator'] = $validator->errors()->all();
+            $respuesta['mensaje'] = 'Error con los datos ingresados.';
         } else {
             $motel = new Motel($request->all());
-            $motel->save();
-            
-            if ($motel) {
+            if ($motel->save()) {
                 $respuesta["mensaje"] = "Guardado correctamente";
                 $respuesta["result"] = $motel;
             } else {
-                $respuesta["mensaje"] = "Error al guardar";
-                $respuesta["result"] = false;
+                $respuesta["mensaje"] = "Error al guardar.";
             }
         }
         return $respuesta;
@@ -121,12 +136,13 @@ class MotelesController extends Controller
     */
     public function show($id)
     {
-        $motel = Motel::where("id", $id)->first();
+        $respuesta = [];
+        $respuesta['result'] = false;
+        $motel = Motel::find($id);
         if ($motel) {
             $respuesta["result"] = $motel;
         } else {
-            $respuesta["mensaje"] = "No se encontraron registros";
-            $respuesta["result"] = false;
+            $respuesta["mensaje"] = "No se encuentra registrado.";
         }
         return $respuesta;
     }

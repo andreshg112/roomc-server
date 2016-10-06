@@ -11,13 +11,21 @@ use App\Models\Motel;
 
 class AdministradoresController extends Controller
 {
-    public function getMotelesByAdministrador($user_id)
+    //Es byAdministrador, debe recibir administrador_id no user_id.
+    public function getMotelesByAdministrador($administrador_id)
     {
-        $datos = Administrador::where("user_id", $user_id)->first();
-        if($datos){
-            $respuesta = Motel::all();
+        $respuesta = [];
+        $respuesta['result'] = false;
+        $administrador = Administrador::find($administrador_id);
+        if($administrador){
+            $moteles = Motel::where('administrador_id', $administrador_id)->get();
+            if(count($moteles) > 0) {
+                $respuesta['result'] = $moteles;
+            } else {
+                $respuesta['mensaje'] = 'No hay registros.';
+            }
         } else {
-            $respuesta['mensaje'] = "Usted no es Administrador no tiene permiso.";
+            $respuesta['mensaje'] = "El administrador ingresado no existe.";
         }
         return $respuesta;
     }
@@ -29,13 +37,13 @@ class AdministradoresController extends Controller
     */
     public function index()
     {
-        $administradores=Administrador::all();
-        
-        if($administradores){
-            $respuesta["result"]=$administradores;
+        $respuesta = [];
+        $respuesta['result'] = false;
+        $administradores = Administrador::all();
+        if(count($administradores) > 0) {
+            $respuesta["result"] = $administradores;
         } else {
-            $respuesta["mensaje"]="No se encontraron registros";
-            $respuesta["result"]=false;
+            $respuesta["mensaje"] = "No se encontraron registros.";
         }
         return $respuesta;
     }
@@ -43,6 +51,7 @@ class AdministradoresController extends Controller
     public function store(Request $request)
     {
         $respuesta = [];
+        $respuesta['result'] = false;
         $messages = [
         'required' => 'El campo :attribute es requerido.',
         'exists' => 'El usuario que intenta asignar como administrador no existe',
@@ -52,20 +61,17 @@ class AdministradoresController extends Controller
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
-            $respuesta['result'] = false;
+            $respuesta['mensaje'] = 'Error en los datos ingresados.';
             $respuesta['validator'] = $validator->errors()->all();
         } else {
             $administrador = new Administrador($request->all());
-            $result = $administrador->save();
-            
-            if ($result) {
-                $respuesta["mensaje"] = "Guardado correctamente";
-                $respuesta["result"] = $administrador;
+            $respuesta['result'] = $administrador->save();
+            if ($respuesta['result']) {
+                $respuesta['mensaje'] = "Guardado correctamente";
             } else {
-                $respuesta["mensaje"] = "No se pudo guardar";
+                $respuesta["mensaje"] = "No se pudo guardar.";
             }
         }
-        
         return $respuesta;
     }
     
@@ -75,17 +81,16 @@ class AdministradoresController extends Controller
     * @param  int  $user_id
     * @return \Illuminate\Http\Response
     */
-    public function show($user_id)
+    public function show($administrador_id)
     {
-        $administrador = Administrador::where("user_id", $user_id)->first();
-        
+        $respuesta = [];
+        $respuesta['result'] = false;
+        $administrador = Administrador::find($administrador_id);
         if ($administrador) {
-            $respuesta["result"] = $administrador;
+            $respuesta['result'] = $administrador;
         } else {
-            $respuesta["mensaje"] = "No se encontraron registros";
-            $respuesta["result"] = false;
+            $respuesta['mensaje'] = "No se encontraron registros.";
         }
         return $respuesta;
-        
     }
 }
