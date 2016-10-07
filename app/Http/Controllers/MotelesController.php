@@ -35,17 +35,15 @@ class MotelesController extends Controller
         //Se consultan los porteros de un motel
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
         //Habitaciones ocupadas de ese motel
-        $habitaciones_ocupadas = EntradaSalida::select("habitacion")
+        $habitaciones_ocupadas = EntradaSalida::select("habitacion_id")
         ->whereIn("portero_id", $porteros_id)
         ->whereNull('fecha_salida')
         ->get()
         ->toArray();
         //Habitaciones libres a partir de las ocupadas
-        $habitaciones_libres = Habitacion::select("numero")
-        ->where("motel_id", $motel_id)
-        ->whereNotIn("numero", $habitaciones_ocupadas)
-        ->get()
-        ->toArray();
+        $habitaciones_libres = Habitacion::where("motel_id", $motel_id)
+        ->whereNotIn('id', $habitaciones_ocupadas)
+        ->get();
         if(count($habitaciones_libres) > 0) {
             $respuesta["result"] = $habitaciones_libres;
         } else {
