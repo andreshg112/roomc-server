@@ -17,13 +17,13 @@ class PorterosController extends Controller
      */
     public function index()
     {
+        $respuesta = [];
+        $respuesta['result'] = false;
         $porteros = Portero::all();
-
         if ($porteros) {
             $respuesta["result"] = $porteros;
         } else {
             $respuesta["mensaje"] = "No se encontraron registros";
-            $respuesta["result"] = false;
         }
         return $respuesta;
     }
@@ -38,6 +38,7 @@ class PorterosController extends Controller
     public function store(Request $request)
     {
         $respuesta = [];
+        $respuesta['result'] = false;
         $messages = [
             'required' => 'El campo :attribute es requerido.',
             'exists' => 'El :attribute que intenta asignar como :attribute no existe',
@@ -48,7 +49,6 @@ class PorterosController extends Controller
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
-            $respuesta['result'] = false;
             $respuesta['validator'] = $validator->errors()->all();
         } else {
             $portero = new Portero($request->all());
@@ -61,7 +61,6 @@ class PorterosController extends Controller
                 $respuesta["mensaje"] = "No se pudo guardar";
             }
         }
-
         return $respuesta;
     }
 
@@ -73,15 +72,15 @@ class PorterosController extends Controller
      */
     public function show($user_id)
     {
+        $respuesta = [];
+        $respuesta['result'] = false;
         $portero = Portero::where("user_id", $user_id)->first();
 
         if ($portero) {
             $respuesta["result"] = $portero;
         } else {
             $respuesta["mensaje"] = "No se encontraron registros";
-            $respuesta["result"] = false;
         }
         return $respuesta;
-
     }
 }

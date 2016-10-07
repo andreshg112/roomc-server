@@ -78,7 +78,7 @@ class AdministradoresController extends Controller
     /**
     * Display the specified resource.
     *
-    * @param  int  $user_id
+    * @param  int  $administrador_id
     * @return \Illuminate\Http\Response
     */
     public function show($administrador_id)

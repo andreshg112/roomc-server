@@ -47,9 +47,6 @@ class LoginController extends Controller
                 try {
                     $user = Usuario::where('username', $usuario->username)->first();
                     if ($user) {
-                        //Cualquier tipo de verificacion adicional
-                        //O que se agreguen datos a la consulta, se ejecutan despues de verificar
-                        //La contraseña
                         if ($user && password_verify($usuario->password, $user->password)) {
                             if($user->tipo_usuario == 'ADMIN') {
                                 $user->load('administrador', 'administrador.moteles'); //Carga los moteles
@@ -59,7 +56,7 @@ class LoginController extends Controller
                                 $user->load(['portero', 'portero.motel']);
                             }
                             $respuesta['mensaje'] = "¡Bienvenido $user->primer_nombre $user->primer_apellido!";
-                            $token = JWTAuth::fromUser($user); //No se necesita el this->getData
+                            $token = JWTAuth::fromUser($user);
                             $respuesta['token'] = $token;
                             $respuesta['result'] = $user;
                         } else {

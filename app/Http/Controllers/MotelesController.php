@@ -104,7 +104,7 @@ class MotelesController extends Controller
     */
     public function store(Request $request)
     {
-        $respuesta = []; //Siempre es bueno inicializar.
+        $respuesta = [];
         $respuesta['result'] = false;
         $messages = [
         'required' => 'El campo :attribute es requerido.',
