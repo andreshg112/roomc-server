@@ -10,12 +10,12 @@ use App\Models\Moteles;
 
 class HabitacionesController extends Controller
 {
-    
+
     /**
-    * Display a listing of the resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $respuesta = [];
@@ -28,25 +28,25 @@ class HabitacionesController extends Controller
         }
         return $respuesta;
     }
-    
-    
+
+
     /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request $request
-    * @return \Illuminate\Http\Response
-    */
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
         $respuesta = [];
         $respuesta['result'] = false;
         $messages = [
-        'required' => 'El campo :attribute es requerido.',
-        'unique' => 'El número ' . $request->numero . ' ya existe en el hotel.',
+            'required' => 'El campo :attribute es requerido.',
+            'unique' => 'El número ' . $request->numero . ' ya existe en el hotel.',
         ];
         $rules = [
-        'numero' => 'required|numeric',
-        'motel_id' => 'exists:moteles,id|required|numeric'
+            'numero' => 'required|numeric',
+            'motel_id' => 'exists:moteles,id|required|numeric'
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
@@ -59,34 +59,35 @@ class HabitacionesController extends Controller
             } else {
                 $habitacion = new Habitacion($request->all());
                 $habitacion->save();
-                
+
                 if ($habitacion) {
                     $respuesta["mensaje"] = "Guardado correctamente";
                     $respuesta["result"] = $habitacion;
                 } else {
                     $respuesta["mensaje"] = "Error al guardar";
-                    $respuesta["result"] = false;
                 }
             }
-            
         }
         return $respuesta;
     }
-    
+
     /**
-    * Display the specified resource.
-    *
-    * @param  int $numero
-    * @return \Illuminate\Http\Response
-    */
+     * Display the specified resource.
+     *
+     * @param  int $numero
+     * @return \Illuminate\Http\Response
+     */
     public function show($numero)
     {
+        $respuesta = [];
+        $respuesta['result'] = false;
         $habitacion = Habitacion::where("numero", $numero)->first();
-        
+
         if ($habitacion) {
-            return $habitacion;
+            $respuesta['result'] = $habitacion;
         } else {
-            return $respuesta["mensaje"] = "No se encontraron resultados";
+            $respuesta["mensaje"] = "No se encontraron resultados";
         }
+        return $respuesta;
     }
 }

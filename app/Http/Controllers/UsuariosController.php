@@ -16,6 +16,8 @@ class UsuariosController extends Controller
      */
     public function index()
     {
+        $respuesta = [];
+        $respuesta['result'] = false;
         $usuarios = Usuario::all();
 
         if ($usuarios) {
@@ -36,6 +38,7 @@ class UsuariosController extends Controller
     public function store(Request $request)
     {
         $respuesta = [];
+        $respuesta['result'] = false;
         $messages = [
             'required' => 'El campo :attribute es requerido.',
             'unique' => 'El usuario ' . $request->username . ' ya existe.',
@@ -47,7 +50,6 @@ class UsuariosController extends Controller
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
-            $respuesta['result'] = false;
             $respuesta['validator'] = $validator->errors()->all();
         } else {
             $usuario = new Usuario($request->all());
@@ -73,13 +75,14 @@ class UsuariosController extends Controller
      */
     public function show($id)
     {
-        $usuario = Usuario::where("id",$id)->first();
+        $respuesta = [];
+        $respuesta['result'] = false;
+        $usuario = Usuario::where("id", $id)->first();
 
         if ($usuario) {
             $respuesta["result"] = $usuario;
         } else {
             $respuesta["mensaje"] = "No se encontraron registros";
-            $respuesta["result"] = false;
         }
         return $respuesta;
     }
