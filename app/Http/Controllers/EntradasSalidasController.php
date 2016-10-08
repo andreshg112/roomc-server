@@ -38,12 +38,14 @@ class EntradasSalidasController extends Controller
     {
         $respuesta = [];
         $respuesta['result'] = false;
-        $messages = [
+        /*$messages = [
         'required' => 'El campo :attribute es requerido.',
-        ];
+        ];*/
+        //Ya agregué un componente para que los mensajes sean en español.
+        //En caso de que se quiera personalizar un mensaje, se usa lo anterior.
         $datos_recibidos = $request->all();
         $rules = [
-        'placa' => 'required|string',
+        'placa' => "required|string|unique:entradas_salidas,placa,NULL,id,fecha_salida,NULL",
         'tipo_vehiculo' => 'required|string|in:automovil,motocicleta,taxi',
         'color' => 'required|string',
         'marca' => 'required|string',
@@ -51,7 +53,7 @@ class EntradasSalidasController extends Controller
         'motel_id' => 'exists:moteles,id|required|integer',
         'habitacion_id' => 'required|integer|exists:habitaciones,id,motel_id,'.$datos_recibidos['motel_id']
         ];
-        $validator = \Validator::make($request->all(), $rules, $messages);
+        $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             $respuesta['mensaje'] = 'Error en los datos ingresados.';
             $respuesta['validator'] = $validator->errors()->all();
