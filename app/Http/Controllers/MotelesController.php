@@ -79,7 +79,7 @@ class MotelesController extends Controller
         $respuesta = [];
         $respuesta['result'] = false;
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
-        $result = EntradaSalida::with(['portero', 'portero.usuario'])->whereIn("portero_id", $porteros_id)
+        $result = EntradaSalida::with(['habitacion', 'portero', 'portero.usuario'])->whereIn("portero_id", $porteros_id)
         ->whereNull('fecha_salida')
         ->where('placa', $placa)->first();
         if ($result) {

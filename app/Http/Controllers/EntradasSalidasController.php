@@ -39,12 +39,11 @@ class EntradasSalidasController extends Controller
         $respuesta = [];
         $respuesta['result'] = false;
         $messages = [
-        //'placa.unique' => 'El vehículo aparece dentro del lugar.',
         'habitacion_id.unique' => 'La habitación está ocupada.'
         ];
         $datos_recibidos = $request->all();
         $rules = [
-        'placa' => "required|string|unique:entradas_salidas,placa,NULL,id,fecha_salida,NULL",
+        'placa' => "required|string|unique:entradas_salidas,placa,NULL,id,fecha_salida,NULL,deleted_at,NULL",
         'tipo_vehiculo' => 'required|string|in:automovil,motocicleta,taxi',
         'color' => 'required|string',
         'marca' => 'required|string',
