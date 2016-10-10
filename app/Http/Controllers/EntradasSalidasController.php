@@ -98,28 +98,24 @@ class EntradasSalidasController extends Controller
     {
         $respuesta = [];
         $respuesta['result'] = false;
-        $messages = [
-        'required' => 'El campo :attribute es requerido.',
-        ];
         $datos_recibidos = $request->all();
         $rules = [
         'fecha_salida' => 'required|date',
         'tiempo' => 'required|integer',
-        'placa' => 'required|string',
-        'tipo_vehiculo' => 'required|string',
-        'color' => 'required|string',
-        'color' => 'required|string',
-        'marca' => 'required|string',
-        'portero_id' => 'exists:porteros,id|required|int',
+        //'placa' => 'required|string',
+        //'tipo_vehiculo' => 'required|string',
+        //'color' => 'required|string',
+        //'marca' => 'required|string',
+        'portero_id' => 'required|integer|exists:porteros,id,motel_id,'.$datos_recibidos['motel_id'],
         'motel_id' => 'exists:moteles,id|required|integer',
-        'habitacion_id' => 'required|integer|exists:habitaciones,id,motel_id,'.$datos_recibidos['motel_id']
+        //'habitacion_id' => 'required|integer|exists:habitaciones,id,motel_id,'.$datos_recibidos['motel_id']
         ];
-        $validator = \Validator::make($request->all(), $rules, $messages);
+        $validator = \Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             $respuesta['mensaje'] = 'Error en los datos ingresados.';
             $respuesta['validator'] = $validator->errors()->all();
         } else {
-            $entrada_salida = EntradaSalida::find($id)->first();
+            $entrada_salida = EntradaSalida::find($id);
             if ($entrada_salida) {
                 //Lo encuentra (por id)
                 $entrada_salida->fill($request->all());
@@ -128,10 +124,10 @@ class EntradasSalidasController extends Controller
                     $respuesta['mensaje'] = "Se marcó la salida correctamente.";
                     $respuesta['result'] = $entrada_salida;
                 } else {
-                    $respuesta['mensaje'] = "No puedo actualizarse.";
+                    $respuesta['mensaje'] = "No pudo actualizarse.";
                 }
             } else {
-                $respuesta['mensaje'] = "No esta registrado.";
+                $respuesta['mensaje'] = "No está registrado.";
             }
         }
         return $respuesta;
