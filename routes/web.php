@@ -34,6 +34,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/moteles/{motel_id}/entradas-salidas',
         'MotelesController@getEntradasSalidasFecha');
 
+    Route::get('/moteles/{motel_id}/historial-entradas-salidas',
+        'MotelesController@getAllRecordsEntradasSalidas');
+
     Route::resource('/administradores', 'AdministradoresController', ['only' => ['store', 'show']]);
     Route::get('/administradores/{administrador_id}/moteles', 'AdministradoresController@getMotelesByAdministrador');
 

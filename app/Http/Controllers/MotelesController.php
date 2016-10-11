@@ -58,7 +58,6 @@ class MotelesController extends Controller
         $respuesta = [];
         $respuesta['result'] = false;
         $fecha = $request->input('fecha', Carbon::now());
-        //$respuesta["var"]=$fecha;
         //Se consultan los porteros de un motel
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
         $respuesta["result"] = EntradaSalida::whereIn("portero_id", $porteros_id)
@@ -114,6 +113,22 @@ class MotelesController extends Controller
         return $respuesta;
     }
 
+    public function getAllRecordsEntradasSalidas(Request $request, $motel_id)
+    {
+        $respuesta = [];
+        $respuesta['result'] = false;
+        $placa = $request->input('placa');
+        $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
+
+        $respuesta['result'] = EntradaSalida::whereIn("portero_id", $porteros_id)
+            ->where('placa', $placa)
+            ->get();
+        if (count($respuesta['result'])<=0) {
+            $respuesta['mensaje'] = "No se encontraron registros asociados a la placa ".$placa;
+            $respuesta['result'] = false;
+        }
+        return $respuesta;
+    }
     /**
      * Store a newly created resource in storage.
      * POST /moteles
