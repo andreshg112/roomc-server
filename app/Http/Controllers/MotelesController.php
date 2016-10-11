@@ -117,7 +117,7 @@ class MotelesController extends Controller
     {
         $respuesta = [];
         $respuesta['result'] = false;
-        $placa = $request->input('placa');
+        $placa = $request->input('placa', '');
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
         
         $respuesta['result'] = EntradaSalida::whereIn("portero_id", $porteros_id)
