@@ -39,7 +39,7 @@ class AdministradoresController extends Controller
     {
         $respuesta = [];
         $respuesta['result'] = false;
-        $ocupadas = $request->input('ocupadas', 1);
+        $ocupadas = $request->input('estado', 1);
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
         $consulta_base = EntradaSalida::whereIn('portero_id', $porteros_id);
 

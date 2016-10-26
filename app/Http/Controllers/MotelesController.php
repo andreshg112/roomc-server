@@ -76,30 +76,6 @@ class MotelesController extends Controller
         return $respuesta;
     }
 
-    public function getNumerosVehiculosFecha(Request $request, $motel_id)
-    {
-        $respuesta = [];
-        $respuesta['result'] = false;
-        $fecha = $request->input('fecha', Carbon::now());
-        //Se consultan los porteros de un motel
-        $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
-        if (count($porteros_id) > 0) {
-            $respuesta["result"] = EntradaSalida::with('habitacion')
-                ->whereIn("portero_id", $porteros_id)
-                ->where(DB::raw('date(fecha_entrada)'), $fecha)
-                ->orWhere(DB::raw('date(fecha_salida)'), $fecha)
-                ->get();
-            if (count($respuesta["result"]) <= 0) {
-                $respuesta["mensaje"] = "No hay registros.";
-            }
-        } else {
-            $respuesta["mensaje"] = "No hay registros.";
-        }
-
-        return $respuesta;
-    }
-
-
     public function getAllVehiculos(Request $request, $motel_id)
     {
         $respuesta = [];
