@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Carbon\Carbon;
+use DB;
+
 use App\Models\Administrador;
 use App\Models\Motel;
-
 use App\Models\Habitacion;
 use App\Models\EntradaSalida;
 use App\Models\Vehiculo;
@@ -71,6 +73,37 @@ class AdministradoresController extends Controller
         } else {
             $respuesta["mensaje"]="El motel no pertenece al administrador";
         }
+        return $respuesta;
+    }
+
+    public function getVehiculosDia(Request $request, $adminstrador_id, $motel_id)
+    {
+        $respuesta = [];
+        $respuesta['result'] = false;
+        $fecha = $request->input('fecha', Carbon::now());
+
+        $pertenece = Motel::where("id", $motel_id)
+            ->where("administrador_id", "$adminstrador_id")->get();
+
+        if(count($pertenece)>0) {
+            //Se consultan los porteros de un motel
+            $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
+            if (count($porteros_id) > 0) {
+                $respuesta["result"] = EntradaSalida::with('habitacion')
+                    ->whereIn("portero_id", $porteros_id)
+                    ->where(DB::raw('date(fecha_entrada)'), $fecha)
+                    ->orWhere(DB::raw('date(fecha_salida)'), $fecha)
+                    ->get();
+                if (count($respuesta["result"]) <= 0) {
+                    $respuesta["mensaje"] = "No hay registros.";
+                }
+            } else {
+                $respuesta["mensaje"] = "No hay registros.";
+            }
+        } else {
+            $respuesta["mensaje"]="El motel no pertenece al administrador";
+        }
+
         return $respuesta;
     }
 
