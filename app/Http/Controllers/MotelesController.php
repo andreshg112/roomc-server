@@ -28,7 +28,7 @@ class MotelesController extends Controller
         }
         return $respuesta;
     }
-
+    
     public function getHabitacionesLibres($motel_id)
     {
         $respuesta = [];
@@ -37,14 +37,14 @@ class MotelesController extends Controller
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
         //Habitaciones ocupadas de ese motel
         $habitaciones_ocupadas = EntradaSalida::select("habitacion_id")
-            ->whereIn("portero_id", $porteros_id)
-            ->whereNull('fecha_salida')
-            ->get()
-            ->toArray();
+        ->whereIn("portero_id", $porteros_id)
+        ->whereNull('fecha_salida')
+        ->get()
+        ->toArray();
         //Habitaciones libres a partir de las ocupadas
         $habitaciones_libres = Habitacion::where("motel_id", $motel_id)
-            ->whereNotIn('id', $habitaciones_ocupadas)
-            ->get();
+        ->whereNotIn('id', $habitaciones_ocupadas)
+        ->get();
         if (count($habitaciones_libres) > 0) {
             $respuesta["result"] = $habitaciones_libres;
         } else {
@@ -52,7 +52,7 @@ class MotelesController extends Controller
         }
         return $respuesta;
     }
-
+    
     public function getEntradasSalidasFecha(Request $request, $motel_id)
     {
         $respuesta = [];
@@ -62,20 +62,20 @@ class MotelesController extends Controller
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
         if (count($porteros_id) > 0) {
             $respuesta["result"] = EntradaSalida::with('habitacion')
-                ->whereIn("portero_id", $porteros_id)
-                ->where(DB::raw('date(fecha_entrada)'), $fecha)
-                ->orWhere(DB::raw('date(fecha_salida)'), $fecha)
-                ->get();
+            ->whereIn("portero_id", $porteros_id)
+            ->where(DB::raw('date(fecha_entrada)'), $fecha)
+            ->orWhere(DB::raw('date(fecha_salida)'), $fecha)
+            ->get();
             if (count($respuesta["result"]) <= 0) {
                 $respuesta["mensaje"] = "No hay registros.";
             }
         } else {
             $respuesta["mensaje"] = "No hay registros.";
         }
-
+        
         return $respuesta;
     }
-
+    
     public function getAllVehiculos(Request $request, $motel_id)
     {
         $respuesta = [];
@@ -97,7 +97,7 @@ class MotelesController extends Controller
         }
         return $respuesta;
     }
-
+    
     public function getNumeroHabitaciones(Request $request, $motel_id)
     {
         $respuesta = [];
@@ -105,90 +105,101 @@ class MotelesController extends Controller
         $ocupadas = $request->input('ocupadas', 1);
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
         $consulta_base = EntradaSalida::whereIn('portero_id', $porteros_id);
-
+        
         if ($ocupadas) {
             $habitaciones_ocupadas = $consulta_base
-                ->select("habitacion_id")
-                ->whereNull('fecha_salida')
-                ->get();
-
+            ->select("habitacion_id")
+            ->whereNull('fecha_salida')
+            ->get();
+            
             $numeros_habitaciones_ocupadas = Habitacion::select("numero")
-                ->where("motel_id", $motel_id)
-                ->whereIn("id", $habitaciones_ocupadas)
-                ->get();
+            ->where("motel_id", $motel_id)
+            ->whereIn("id", $habitaciones_ocupadas)
+            ->get();
             $respuesta["result"]["ocupadas"] = $numeros_habitaciones_ocupadas;
         } else {
             $habitaciones_ocupadas = $consulta_base->select("habitacion_id")
-                ->whereNull('fecha_salida')
-                ->get();
-
+            ->whereNull('fecha_salida')
+            ->get();
+            
             $numeros_habitaciones_libres = Habitacion::select("numero")
-                ->where("motel_id", $motel_id)
-                ->whereNotIn("id", $habitaciones_ocupadas)
-                ->get();
-
+            ->where("motel_id", $motel_id)
+            ->whereNotIn("id", $habitaciones_ocupadas)
+            ->get();
+            
             $respuesta["result"]["libres"] = $numeros_habitaciones_libres;
-
+            
         }
         return $respuesta;
     }
-
+    
     public function getVehiculo($motel_id, $placa)
     {
         $respuesta = [];
         $respuesta['result'] = false;
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
         $result = EntradaSalida::with(['habitacion', 'portero', 'portero.usuario'])->whereIn("portero_id", $porteros_id)
-            ->whereNull('fecha_salida')
-            ->where('placa', $placa)->first();
+        ->whereNull('fecha_salida')
+        ->where('placa', $placa)->first();
         if ($result) {
             $fecha_entrada = Carbon::createFromFormat('Y-m-d H:i:s', $result->fecha_entrada);
             $fecha_salida = Carbon::now();
             $result->fecha_salida = $fecha_salida->toDateTimeString();
             $result->tiempo = $fecha_salida->diffInSeconds($fecha_entrada);
+            if ($result->habitacion->motel->cobra_por_habitacion) {
+                //Cálculo del valor de la estadía
+                $costo_hora = $result->habitacion->tipo_habitacion->costo_hora;
+                $costo_fraccion = $result->habitacion->tipo_habitacion->costo_fraccion;
+                $minutos_fraccion = $result->habitacion->motel->minutos_fraccion;
+                $minutos_estadia = round($result->tiempo / 60);
+                $minutos_adicionales_hora = $minutos_estadia <= 60 ? 0 : $minutos_estadia - 60;
+                
+                $result->valor_estadia = $costo_hora +
+                ceil( $minutos_adicionales_hora / $minutos_fraccion ) * $costo_fraccion;
+            }
             $respuesta['result'] = $result;
         } else {
             $respuesta['mensaje'] = 'El vehículo con la placa ' . strtoupper($placa) . ' no se encuentra dentro del motel.';
         }
         return $respuesta;
     }
-
+    
     public function getAllRecordsEntradasSalidas(Request $request, $motel_id)
     {
         $respuesta = [];
         $respuesta['result'] = false;
         $placa = $request->input('placa');
         $porteros_id = Portero::select('id')->where('motel_id', $motel_id)->get();
-
+        
         $respuesta['result'] = EntradaSalida::whereIn("portero_id", $porteros_id)
-            ->where('placa', $placa)
-            ->get();
+        ->where('placa', $placa)
+        ->get();
         if (count($respuesta['result']) <= 0) {
             $respuesta['mensaje'] = "No se encontraron registros asociados a la placa " . $placa;
             $respuesta['result'] = false;
         }
         return $respuesta;
     }
-
+    
     /**
-     * Store a newly created resource in storage.
-     * POST /moteles
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
+    * Store a newly created resource in storage.
+    * POST /moteles
+    * @param  \Illuminate\Http\Request $request
+    * @return \Illuminate\Http\Response
+    */
     public function store(Request $request)
     {
         $respuesta = [];
         $respuesta['result'] = false;
         $messages = [
-            'required' => 'El campo :attribute es requerido.',
-            'exists' => 'El usuario seleccionado como administrador no existe.',
+        'required' => 'El campo :attribute es requerido.',
+        'exists' => 'El usuario seleccionado como administrador no existe.',
         ];
         $rules = [
-            'nombre' => 'required|string',
-            'direccion' => 'required|string',
-            'telefono' => 'required|string',
-            'administrador_id' => 'required|exists:usuarios,id|numeric'
+        'nombre' => 'required|string',
+        'direccion' => 'required|string',
+        'telefono' => 'required|string',
+        'administrador_id' => 'required|exists:usuarios,id|numeric'
         ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
@@ -205,13 +216,13 @@ class MotelesController extends Controller
         }
         return $respuesta;
     }
-
+    
     /**
-     * Display the specified resource.
-     * GET  /moteles/{id}
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
+    * Display the specified resource.
+    * GET  /moteles/{id}
+    * @param  int $id
+    * @return \Illuminate\Http\Response
+    */
     public function show($id)
     {
         $respuesta = [];
